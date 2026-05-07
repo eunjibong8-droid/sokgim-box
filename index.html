@@ -86,6 +86,9 @@
   <div class="history-label" id="hist-label">— 지난 질문들 —</div>
   <div class="history-list" id="hist-list"></div>
 
+  <!-- 전체 히스토리 보기 버튼 -->
+  <button class="history-view-btn" id="history-view-btn">📖 전체 기록 보기</button>
+
   <!-- 묘지 섹션 -->
   <div class="graveyard-section" id="gy-section" style="display:none">
     <div class="gy-icon-wrap" id="gy-toggle">
@@ -100,6 +103,16 @@
 </div>
 
 <div class="revive-toast" id="revive-toast">🌱 질문이 다시 돌아왔어요</div>
+
+<!-- 전체 히스토리 뷰 -->
+<div class="history-view" id="history-view">
+  <div class="hv-header">
+    <div class="hv-title">📖 전체 기록</div>
+    <button class="hv-close" id="hv-close">✕</button>
+  </div>
+  <div class="hv-list" id="hv-list"></div>
+</div>
+<div class="history-view-overlay" id="history-view-overlay"></div>
 
 <script type="module" src="/src/main.js"></script>
 </body>

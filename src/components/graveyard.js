@@ -1,11 +1,16 @@
 import { showToast } from './toast.js'
+import { getStoredBuried, saveBuried } from '../store/storage.js'
 
 let buried = []
 let gyOpen = false
 let _reviveCallback = null
 
 export function initGraveyard() {
+  buried = getStoredBuried()
   document.getElementById('gy-toggle').addEventListener('click', toggleGraveyard)
+  // 폴라로이드 그리드 이벤트 위임 — 단 한 번만 등록
+  document.getElementById('polaroid-grid').addEventListener('click', _onPolaroidClick)
+  updateGraveyard()
 }
 
 export function setReviveCallback(fn) {
@@ -14,6 +19,7 @@ export function setReviveCallback(fn) {
 
 export function buryItem(item) {
   buried.push({ ...item, buriedId: Date.now() })
+  saveBuried(buried)
   updateGraveyard()
 }
 
@@ -46,16 +52,12 @@ export function updateGraveyard() {
       <span class="polaroid-revive">🌱 꺼내기</span>
     </div>
   `).join('')
-
-  // 이벤트 위임 — 클릭마다 재등록하므로 grid를 교체한 뒤 단 한 번 바인딩
-  grid.addEventListener('click', _onPolaroidClick)
 }
 
 function _onPolaroidClick(e) {
   const card = e.target.closest('.polaroid-card')
   if (!card) return
-  const buriedId = Number(card.dataset.buriedId)
-  _revivePolaroid(buriedId)
+  _revivePolaroid(Number(card.dataset.buriedId))
 }
 
 function _revivePolaroid(buriedId) {
@@ -67,9 +69,8 @@ function _revivePolaroid(buriedId) {
     const idx = buried.findIndex(b => b.buriedId === buriedId)
     if (idx !== -1) {
       const item = buried.splice(idx, 1)[0]
-      if (typeof _reviveCallback === 'function') {
-        _reviveCallback(item)
-      }
+      saveBuried(buried)
+      if (typeof _reviveCallback === 'function') _reviveCallback(item)
     }
     updateGraveyard()
     showToast()

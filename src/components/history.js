@@ -1,21 +1,21 @@
 import { buryItem, updateGraveyard } from './graveyard.js'
+import { getStoredHistory, saveHistory } from '../store/storage.js'
 
 let history = []
 
-/**
- * 이벤트 리스너를 한 번만 등록. main.js의 DOMContentLoaded 시점에 호출.
- */
 export function initHistory() {
+  history = getStoredHistory()
+  renderHistory()
   document.getElementById('hist-list').addEventListener('click', _onListClick)
 }
 
 /**
- * 히스토리 맨 앞에 항목 추가 후 최대 8개 유지, 렌더링.
- * @param {{ q: string, mood: string, emoji: string, num: number }} item
+ * 히스토리 맨 앞에 항목 추가. 전체 localStorage에 저장, 메인 뷰는 최근 8개만 표시.
  */
 export function addToHistory(item) {
-  history.unshift(item)
-  if (history.length > 8) history.pop()
+  const entry = { ...item, date: item.date || new Date().toISOString() }
+  history.unshift(entry)
+  saveHistory(history)
   renderHistory()
 }
 
@@ -26,7 +26,8 @@ export function getHistory() {
 export function renderHistory() {
   const label = document.getElementById('hist-label')
   const list = document.getElementById('hist-list')
-  const prev = history.slice(1)
+  // 메인 뷰: 현재 질문(index 0) 제외, 최근 8개
+  const prev = history.slice(1, 9)
 
   if (!prev.length) {
     label.classList.remove('show')
@@ -68,13 +69,11 @@ export function renderHistory() {
 }
 
 function _onListClick(e) {
-  // 메모 영역 클릭 전파 차단
   if (e.target.closest('.h-memo-wrap')) {
     e.stopPropagation()
     return
   }
 
-  // 저장 버튼
   const saveBtn = e.target.closest('[data-save-memo]')
   if (saveBtn) {
     e.stopPropagation()
@@ -82,7 +81,6 @@ function _onListClick(e) {
     return
   }
 
-  // 묻어두기 버튼
   const buryBtn = e.target.closest('[data-bury-idx]')
   if (buryBtn) {
     e.stopPropagation()
@@ -90,7 +88,6 @@ function _onListClick(e) {
     return
   }
 
-  // 메모 토글
   const toggleEl = e.target.closest('[data-toggle-memo]')
   if (toggleEl) {
     _toggleMemo(Number(toggleEl.dataset.toggleMemo))
@@ -118,6 +115,7 @@ function _saveMemo(idx) {
   const text = ta.value.trim()
 
   history[idx].memo = text
+  saveHistory(history)
 
   saved.classList.add('show')
   setTimeout(() => {
@@ -139,6 +137,7 @@ function _buryCard(idx) {
     card.classList.add('burying')
     setTimeout(() => {
       history.splice(idx, 1)
+      saveHistory(history)
       buryItem(item)
       updateGraveyard()
       renderHistory()
