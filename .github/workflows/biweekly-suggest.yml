@@ -1,0 +1,35 @@
+name: 격주 업데이트 제안
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # 매주 월요일 오전 9시 UTC (한국 오후 6시)
+  workflow_dispatch:        # 수동 실행 가능
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  suggest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 격주 여부 확인
+        id: check
+        run: |
+          WEEK=$(date +%V)
+          if [ $((10#$WEEK % 2)) -eq 0 ]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+            echo "짝수 주 ($WEEK) — 제안 실행"
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+            echo "홀수 주 ($WEEK) — 스킵"
+          fi
+
+      - name: 업데이트 제안 생성 및 이슈 등록
+        if: steps.check.outputs.run == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 .github/scripts/suggest.py
