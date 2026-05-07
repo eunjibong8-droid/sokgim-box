@@ -18,13 +18,18 @@ jobs:
       - name: 격주 여부 확인
         id: check
         run: |
-          WEEK=$(date +%V)
-          if [ $((10#$WEEK % 2)) -eq 0 ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "run=true" >> $GITHUB_OUTPUT
-            echo "짝수 주 ($WEEK) — 제안 실행"
+            echo "수동 실행 — 항상 실행"
           else
-            echo "run=false" >> $GITHUB_OUTPUT
-            echo "홀수 주 ($WEEK) — 스킵"
+            WEEK=$(date +%V)
+            if [ $((10#$WEEK % 2)) -eq 0 ]; then
+              echo "run=true" >> $GITHUB_OUTPUT
+              echo "짝수 주 ($WEEK) — 제안 실행"
+            else
+              echo "run=false" >> $GITHUB_OUTPUT
+              echo "홀수 주 ($WEEK) — 스킵"
+            fi
           fi
 
       - name: 업데이트 제안 생성 및 이슈 등록
