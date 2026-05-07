@@ -69,15 +69,17 @@ export function renderHistory() {
 }
 
 function _onListClick(e) {
-  if (e.target.closest('.h-memo-wrap')) {
-    e.stopPropagation()
-    return
-  }
-
+  // 저장 버튼은 h-memo-wrap 안에 있으므로 반드시 먼저 확인
   const saveBtn = e.target.closest('[data-save-memo]')
   if (saveBtn) {
     e.stopPropagation()
     _saveMemo(Number(saveBtn.dataset.saveMemo))
+    return
+  }
+
+  // 저장 버튼 외 메모 영역 클릭은 전파 차단
+  if (e.target.closest('.h-memo-wrap')) {
+    e.stopPropagation()
     return
   }
 
