@@ -192,9 +192,8 @@
   font-size: 14px;
   color: var(--ink);
   line-height: 1.45;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: keep-all;
 }
 
 .h-num {
