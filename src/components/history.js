@@ -3,6 +3,13 @@ import { buryItem, updateGraveyard } from './graveyard.js'
 let history = []
 
 /**
+ * 이벤트 리스너를 한 번만 등록. main.js의 DOMContentLoaded 시점에 호출.
+ */
+export function initHistory() {
+  document.getElementById('hist-list').addEventListener('click', _onListClick)
+}
+
+/**
  * 히스토리 맨 앞에 항목 추가 후 최대 8개 유지, 렌더링.
  * @param {{ q: string, mood: string, emoji: string, num: number }} item
  */
@@ -58,9 +65,6 @@ export function renderHistory() {
       </div>
     `
   }).join('')
-
-  // 이벤트 위임 — innerHTML 교체 후 새 리스너 등록
-  list.addEventListener('click', _onListClick)
 }
 
 function _onListClick(e) {

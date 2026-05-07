@@ -30,41 +30,41 @@ async function _dispense() {
   ph.querySelector('.placeholder-icon').textContent = '🌀'
   ph.querySelector('.placeholder-text').innerHTML = '생각 중...'
 
-  const { question, mood } = await fetchQuestion(getApiKey(), getHistory())
+  try {
+    const { question, mood } = await fetchQuestion(getApiKey(), getHistory())
 
-  count++
-  ph.style.display = 'none'
-  document.getElementById('q-text').textContent = question
-  qOut.classList.remove('show')
-  void qOut.offsetWidth
-  qOut.classList.add('show')
-  wave.classList.add('show')
+    count++
+    ph.style.display = 'none'
+    document.getElementById('q-text').textContent = question
+    qOut.classList.remove('show')
+    void qOut.offsetWidth
+    qOut.classList.add('show')
+    wave.classList.add('show')
 
-  const m = MOOD_MAP[mood] || MOOD_MAP['조용한']
-  pill.textContent = m.emoji + ' ' + mood
-  pill.style.background = m.bg
-  pill.classList.add('show')
+    const m = MOOD_MAP[mood] || MOOD_MAP['조용한']
+    pill.textContent = m.emoji + ' ' + mood
+    pill.style.background = m.bg
+    pill.classList.add('show')
 
-  document.getElementById('sess-num').textContent = String(count).padStart(2, '0')
+    document.getElementById('sess-num').textContent = String(count).padStart(2, '0')
 
-  const cb = document.getElementById('count-bubble')
-  cb.textContent = count
-  cb.classList.remove('bump')
-  void cb.offsetWidth
-  cb.classList.add('bump')
+    const cb = document.getElementById('count-bubble')
+    cb.textContent = count
+    cb.classList.remove('bump')
+    void cb.offsetWidth
+    cb.classList.add('bump')
 
-  // 도트
-  const dotRow = document.getElementById('dot-row')
-  dotRow.classList.add('show')
-  document.querySelectorAll('.dot').forEach((d, i) =>
-    d.classList.toggle('on', i < (count % 5 || 5))
-  )
+    const dotRow = document.getElementById('dot-row')
+    dotRow.classList.add('show')
+    document.querySelectorAll('.dot').forEach((d, i) =>
+      d.classList.toggle('on', i < (count % 5 || 5))
+    )
 
-  // 히스토리 — addToHistory가 unshift + 8개 제한 + renderHistory를 처리
-  addToHistory({ q: question, mood, emoji: m.emoji, num: count })
-
-  busy = false
-  btn.disabled = false
-  btn.classList.remove('loading')
-  icon.textContent = '🪴'
+    addToHistory({ q: question, mood, emoji: m.emoji, num: count })
+  } finally {
+    busy = false
+    btn.disabled = false
+    btn.classList.remove('loading')
+    icon.textContent = '🪴'
+  }
 }
