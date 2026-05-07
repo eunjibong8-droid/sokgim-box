@@ -1,5 +1,4 @@
 import { fetchQuestion, MOOD_MAP } from '../api/claude.js'
-import { getApiKey } from '../store/storage.js'
 import { addToHistory, getHistory } from './history.js'
 
 let count = 0
@@ -31,7 +30,7 @@ async function _dispense() {
   ph.querySelector('.placeholder-text').innerHTML = '생각 중...'
 
   try {
-    const { question, mood } = await fetchQuestion(getApiKey(), getHistory())
+    const { question, mood } = await fetchQuestion(getHistory())
 
     count++
     ph.style.display = 'none'

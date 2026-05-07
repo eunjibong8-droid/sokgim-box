@@ -3,15 +3,11 @@ import './styles/components/card.css'
 import './styles/components/history.css'
 import './styles/components/graveyard.css'
 import './styles/components/toast.css'
-import './styles/components/api-key.css'
-
-import { initApiKey } from './components/api-key.js'
 import { initQuestionCard } from './components/question-card.js'
 import { initGraveyard, setReviveCallback } from './components/graveyard.js'
 import { initHistory, addToHistory } from './components/history.js'
 
 document.addEventListener('DOMContentLoaded', () => {
-  initApiKey()
   initQuestionCard()
   initHistory()
   initGraveyard()

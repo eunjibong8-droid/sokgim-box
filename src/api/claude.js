@@ -24,28 +24,20 @@ const FALLBACK = [
 ]
 
 /**
- * @param {string} apiKey
  * @param {{ q: string }[]} history
  * @returns {Promise<{ question: string, mood: string }>}
  */
-export async function fetchQuestion(apiKey, history = []) {
+export async function fetchQuestion(history = []) {
   const prev = history.length
     ? '\n중복 금지 기존 질문:\n' + history.map((h, i) => `${i + 1}. ${h.q}`).join('\n')
     : ''
 
   try {
-    if (!apiKey) throw new Error('no key')
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/ask', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 200,
         system: SYS + prev,
         messages: [{ role: 'user', content: '생성' }],

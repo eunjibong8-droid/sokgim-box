@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/sokgim-box/',
+  base: '/',
   build: {
     outDir: 'dist'
   },
@@ -18,8 +18,8 @@ export default defineConfig({
         background_color: '#fef0ec',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/sokgim-box/',
-        start_url: '/sokgim-box/',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: 'icon.svg',
