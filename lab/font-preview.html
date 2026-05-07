@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글씨체 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;700&family=Noto+Serif+KR:wght@400;700&family=Gowun+Batang:wght@400;700&family=Nanum+Gothic&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fef0ec;
+    background-image: radial-gradient(circle, rgba(122,158,126,0.12) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'Gaegu', cursive;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .top-label {
+    text-align: center;
+    font-size: 13px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .card {
+    background: #fffaf8;
+    border: 3px solid #2c2c2c;
+    border-radius: 24px;
+    padding: 22px 24px;
+    box-shadow: 4px 4px 0 #2c2c2c;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    position: relative;
+  }
+
+  .card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #2c2c2c;
+  }
+
+  .card.selected {
+    border-color: #7a9e7e;
+    box-shadow: 4px 4px 0 #7a9e7e;
+    background: #edf5ee;
+  }
+
+  .card-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a89490;
+  }
+
+  .card.selected .card-label {
+    color: #4a7050;
+  }
+
+  .card-sample {
+    font-size: 20px;
+    color: #2c2c2c;
+    line-height: 1.7;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: #a89490;
+  }
+
+  .selected-badge {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card.selected .selected-badge {
+    opacity: 1;
+  }
+
+  .hahmlet { font-family: 'Hahmlet', serif; }
+  .noto { font-family: 'Noto Serif KR', serif; }
+  .gowun { font-family: 'Gowun Batang', serif; }
+  .gothic { font-family: 'Nanum Gothic', sans-serif; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-label">🌿 질문 텍스트 글씨체 미리보기</div>
+
+  <div class="card" onclick="select(this)">
+    <span class="card-label">Hahmlet</span>
+    <div class="card-sample hahmlet">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    <div class="card-desc">가늘고 우아한 명조 — 획이 섬세해요</div>
+    <span class="selected-badge">✅</span>
+  </div>
+
+  <div class="card" onclick="select(this)">
+    <span class="card-label">Noto Serif KR</span>
+    <div class="card-sample noto">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    <div class="card-desc">단정하고 안정적 — 읽기 편안해요</div>
+    <span class="selected-badge">✅</span>
+  </div>
+
+  <div class="card" onclick="select(this)">
+    <span class="card-label">Gowun Batang</span>
+    <div class="card-sample gowun">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    <div class="card-desc">따뜻하고 클래식 — 약간 빈티지 감성</div>
+    <span class="selected-badge">✅</span>
+  </div>
+
+  <div class="card" onclick="select(this)">
+    <span class="card-label">Nanum Gothic</span>
+    <div class="card-sample gothic">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    <div class="card-desc">깔끔한 고딕 — 현대적이고 가독성 최고</div>
+    <span class="selected-badge">✅</span>
+  </div>
+</div>
+
+<script>
+  function select(el) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+</body>
+</html>

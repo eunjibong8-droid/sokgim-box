@@ -1,0 +1,165 @@
+/* 묘지 섹션 */
+.graveyard-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.gy-icon-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 8px;
+}
+
+.gy-icon-wrap:hover { transform: translateY(-3px); }
+
+.gy-icon { font-size: 30px; }
+
+.gy-badge {
+  background: #6b6b6b;
+  color: #fffaf8;
+  border-radius: 20px;
+  padding: 1px 9px;
+  font-size: 11px;
+  font-family: 'Gaegu', cursive;
+  min-width: 20px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.gy-badge.show { opacity: 1; }
+
+/* 묘지 펼침 */
+.gy-body {
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.35s ease;
+  opacity: 0;
+}
+
+.gy-body.open {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+/* 폴라로이드 그리드 */
+.polaroid-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px 4px 8px;
+  align-items: center;
+}
+
+.polaroid-card {
+  background: #faf6ee;
+  border: 1px solid #d8cfc0;
+  padding: 14px 14px 32px;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.03);
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+  filter: sepia(0.4) brightness(0.92);
+  position: relative;
+  animation: polaroid-in 0.4s ease;
+}
+
+.polaroid-card:nth-child(odd)  { transform: rotate(-2deg); }
+.polaroid-card:nth-child(even) { transform: rotate(1.5deg); }
+
+.polaroid-card:hover {
+  filter: sepia(0) brightness(1);
+  box-shadow: 4px 8px 24px rgba(0,0,0,0.15);
+}
+
+.polaroid-card:nth-child(odd):hover  { transform: rotate(0deg) scale(1.02); }
+.polaroid-card:nth-child(even):hover { transform: rotate(0deg) scale(1.02); }
+
+/* 테이프 */
+.polaroid-card::before {
+  content: '';
+  position: absolute;
+  top: -9px; left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 50px; height: 16px;
+  background: rgba(255,240,160,0.75);
+  border: 1px solid rgba(200,180,80,0.25);
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 90px;
+  background: #e8e0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  filter: grayscale(0.3);
+  transition: filter 0.3s;
+}
+
+.polaroid-card:hover .polaroid-img { filter: grayscale(0); }
+
+.polaroid-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+  pointer-events: none;
+}
+
+.polaroid-q {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 16px;
+  color: #5a4a3a;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.polaroid-mood {
+  font-size: 11px;
+  color: #a89490;
+  text-align: center;
+  margin-top: 5px;
+  letter-spacing: 1px;
+}
+
+.polaroid-revive {
+  position: absolute;
+  bottom: 8px; right: 12px;
+  font-size: 11px;
+  color: #7a9e7e;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.polaroid-card:hover .polaroid-revive { opacity: 1; }
+
+.polaroid-card.reviving {
+  animation: revive-anim 0.45s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes polaroid-in {
+  from { opacity: 0; transform: rotate(0deg) scale(0.85); }
+  to { opacity: 1; }
+}
+
+@keyframes revive-anim {
+  0%  { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); filter: sepia(0) brightness(1.1); }
+  100%{ opacity: 0; transform: scale(0.9); }
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메모 레이아웃 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Batang&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fef0ec;
+    background-image: radial-gradient(circle, rgba(122,158,126,0.12) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    min-height: 100vh;
+    font-family: 'Gaegu', cursive;
+    padding: 32px 20px 60px;
+  }
+
+  .page-title {
+    text-align: center;
+    font-size: 15px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .section {
+    max-width: 400px;
+    margin: 0 auto 40px;
+  }
+
+  .section-label {
+    font-size: 13px;
+    color: #a89490;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    background: #2c2c2c;
+    color: #fffaf8;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  /* ───── 공통 카드 ───── */
+  .card {
+    background: #fffaf8;
+    border: 3px solid #2c2c2c;
+    border-radius: 28px;
+    padding: 22px 22px 18px;
+    box-shadow: 5px 5px 0 #2c2c2c;
+  }
+
+  .q-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a89490;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-family: 'Gowun Batang', serif;
+    font-size: 18px;
+    color: #2c2c2c;
+    line-height: 1.7;
+  }
+
+  /* ───── A: 질문 아래 바로 ───── */
+  .divider {
+    border: none;
+    border-top: 1.5px dashed #e0d4ce;
+    margin: 16px 0;
+  }
+
+  .memo-label {
+    font-size: 12px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .memo-area {
+    width: 100%;
+    background: #fef8f5;
+    border: 2px solid #e8d8d0;
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-family: 'Gowun Batang', serif;
+    font-size: 15px;
+    color: #2c2c2c;
+    line-height: 1.7;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+    min-height: 80px;
+  }
+
+  .memo-area:focus {
+    border-color: #f2a99a;
+  }
+
+  .memo-area::placeholder {
+    color: #c8b8b0;
+    font-family: 'Gowun Batang', serif;
+  }
+
+  .save-btn {
+    margin-top: 10px;
+    background: #2c2c2c;
+    color: #fffaf8;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-family: 'Gaegu', cursive;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #7a9e7e;
+    transition: all 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    margin-left: auto;
+  }
+
+  .save-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #7a9e7e;
+  }
+
+  /* ───── B: 펼쳐지는 방식 ───── */
+  .think-btn {
+    margin-top: 14px;
+    width: 100%;
+    background: #fcd5cc;
+    color: #2c2c2c;
+    border: 2.5px solid #2c2c2c;
+    border-radius: 50px;
+    padding: 11px;
+    font-family: 'Gaegu', cursive;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #2c2c2c;
+    transition: all 0.12s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .think-btn:hover {
+    transform: translate(-1px,-1px);
+    box-shadow: 4px 4px 0 #2c2c2c;
+  }
+
+  .expand-area {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .expand-area.open {
+    max-height: 200px;
+    opacity: 1;
+  }
+
+  .expand-inner {
+    padding-top: 14px;
+  }
+
+  /* ───── C: 질문+메모 나란히 ───── */
+  .split-card {
+    background: #fffaf8;
+    border: 3px solid #2c2c2c;
+    border-radius: 28px;
+    box-shadow: 5px 5px 0 #2c2c2c;
+    overflow: hidden;
+  }
+
+  .split-top {
+    background: #fcd5cc;
+    padding: 20px 22px 16px;
+    border-bottom: 2.5px solid #2c2c2c;
+  }
+
+  .split-bottom {
+    padding: 16px 22px 18px;
+    background: #fffaf8;
+  }
+
+  .split-memo {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-family: 'Gowun Batang', serif;
+    font-size: 15px;
+    color: #2c2c2c;
+    line-height: 1.7;
+    resize: none;
+    outline: none;
+    min-height: 80px;
+  }
+
+  .split-memo::placeholder {
+    color: #c8b8b0;
+    font-family: 'Gowun Batang', serif;
+  }
+
+  .split-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1.5px dashed #e0d4ce;
+    margin-top: 8px;
+  }
+
+  .char-count {
+    font-size: 12px;
+    color: #c8b8b0;
+  }
+
+  .split-save {
+    background: #7a9e7e;
+    color: white;
+    border: 2.5px solid #2c2c2c;
+    border-radius: 50px;
+    padding: 7px 18px;
+    font-family: 'Gaegu', cursive;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #2c2c2c;
+    transition: all 0.12s;
+  }
+
+  .split-save:hover {
+    transform: translate(-1px,-1px);
+    box-shadow: 3px 3px 0 #2c2c2c;
+  }
+
+  /* 선택 버튼 */
+  .pick-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .pick-btn {
+    flex: 1;
+    background: #fffaf8;
+    border: 2px solid #2c2c2c;
+    border-radius: 20px;
+    padding: 9px;
+    font-family: 'Gaegu', cursive;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.12s;
+    text-align: center;
+  }
+
+  .pick-btn:hover {
+    background: #c2d9c5;
+    border-color: #7a9e7e;
+  }
+
+  .pick-btn.selected {
+    background: #2c2c2c;
+    color: #fffaf8;
+    border-color: #2c2c2c;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">🌿 메모 입력 레이아웃 미리보기</div>
+
+<!-- A -->
+<div class="section">
+  <div class="section-label">
+    <span class="badge">A</span>
+    질문 아래 바로 입력
+  </div>
+  <div class="card">
+    <div class="q-label">SESSION 01 · 무거운</div>
+    <div class="q-text">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    <hr class="divider">
+    <div class="memo-label">✏️ 내 생각</div>
+    <textarea class="memo-area" placeholder="지금 떠오르는 생각을 자유롭게 적어보세요..."></textarea>
+    <button class="save-btn">저장 🌿</button>
+  </div>
+</div>
+
+<!-- B -->
+<div class="section">
+  <div class="section-label">
+    <span class="badge">B</span>
+    버튼 눌러서 펼쳐지게
+  </div>
+  <div class="card">
+    <div class="q-label">SESSION 01 · 무거운</div>
+    <div class="q-text">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    <button class="think-btn" onclick="toggleExpand(this)">
+      <span>💭</span> 생각 적기
+    </button>
+    <div class="expand-area">
+      <div class="expand-inner">
+        <textarea class="memo-area" placeholder="지금 떠오르는 생각을 자유롭게 적어보세요..."></textarea>
+        <button class="save-btn" style="margin-top:10px">저장 🌿</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- C -->
+<div class="section">
+  <div class="section-label">
+    <span class="badge">C</span>
+    질문 위 / 메모 아래 분리
+  </div>
+  <div class="split-card">
+    <div class="split-top">
+      <div class="q-label">SESSION 01 · 무거운</div>
+      <div class="q-text">내가 기억하지 못하는 나는<br>아직 나인가?</div>
+    </div>
+    <div class="split-bottom">
+      <div class="memo-label" style="margin-bottom:8px">✏️ 내 생각</div>
+      <textarea class="split-memo" id="split-ta" placeholder="지금 떠오르는 생각을 자유롭게 적어보세요..." oninput="updateCount(this)"></textarea>
+      <div class="split-footer">
+        <span class="char-count" id="char-count">0자</span>
+        <button class="split-save">저장 🌿</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleExpand(btn) {
+    const area = btn.nextElementSibling;
+    const isOpen = area.classList.contains('open');
+    area.classList.toggle('open');
+    btn.innerHTML = isOpen ? '<span>💭</span> 생각 적기' : '<span>✕</span> 접기';
+    if (!isOpen) {
+      setTimeout(() => area.querySelector('textarea').focus(), 300);
+    }
+  }
+
+  function updateCount(ta) {
+    document.getElementById('char-count').textContent = ta.value.length + '자';
+  }
+</script>
+</body>
+</html>

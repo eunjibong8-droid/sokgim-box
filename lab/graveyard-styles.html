@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>묘지 스타일 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Batang&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fef0ec;
+    background-image: radial-gradient(circle, rgba(122,158,126,0.12) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    min-height: 100vh;
+    font-family: 'Gaegu', cursive;
+    padding: 32px 20px 80px;
+  }
+
+  .wrap { max-width: 400px; margin: 0 auto; }
+
+  .page-title {
+    text-align: center;
+    font-size: 13px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+  }
+
+  .section { margin-bottom: 48px; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .badge {
+    background: #2c2c2c;
+    color: #fffaf8;
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 13px;
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: #a89490;
+  }
+
+  /* ─────────────────────────────
+     A. 비석 모양
+  ───────────────────────────── */
+  .tombstone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .ts-stone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .ts-stone:hover { transform: translateY(-4px); }
+
+  .ts-head {
+    width: 100%;
+    background: #e8e2d8;
+    border: 2.5px solid #8a7a6a;
+    border-bottom: none;
+    border-radius: 50% 50% 0 0 / 40% 40% 0 0;
+    padding: 14px 12px 8px;
+    text-align: center;
+    position: relative;
+  }
+
+  .ts-head::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: -2.5px; right: -2.5px;
+    height: 2px;
+    background: #e8e2d8;
+  }
+
+  .ts-body {
+    width: 100%;
+    background: #e8e2d8;
+    border: 2.5px solid #8a7a6a;
+    border-top: none;
+    padding: 6px 12px 14px;
+    text-align: center;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+  }
+
+  .ts-emoji { font-size: 20px; margin-bottom: 6px; display: block; filter: grayscale(0.4); }
+
+  .ts-q-text {
+    font-family: 'Gowun Batang', serif;
+    font-size: 12px;
+    color: #6b5e52;
+    line-height: 1.5;
+  }
+
+  .ts-mood {
+    font-size: 10px;
+    color: #a89490;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .ts-revive {
+    font-size: 11px;
+    color: #7a9e7e;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .ts-stone:hover .ts-revive { opacity: 1; }
+
+  /* ─────────────────────────────
+     B. 흐릿하게 바랜 느낌
+  ───────────────────────────── */
+  .faded-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .faded-card {
+    background: #f0ebe2;
+    border: 2px solid #c8b8a8;
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    filter: saturate(0.3) brightness(0.92);
+    transition: filter 0.3s ease, transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .faded-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+    pointer-events: none;
+  }
+
+  .faded-card:hover {
+    filter: saturate(1) brightness(1);
+    transform: translateX(4px);
+  }
+
+  .faded-emoji { font-size: 22px; flex-shrink: 0; }
+
+  .faded-info { flex: 1; }
+
+  .faded-mood {
+    font-size: 10px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .faded-q {
+    font-family: 'Gowun Batang', serif;
+    font-size: 13px;
+    color: #5a4a3a;
+    line-height: 1.5;
+  }
+
+  .faded-hint {
+    font-size: 11px;
+    color: #7a9e7e;
+    opacity: 0;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+
+  .faded-card:hover .faded-hint { opacity: 1; }
+
+  /* ─────────────────────────────
+     C. 나무 태그 스타일
+  ───────────────────────────── */
+  .tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-left: 20px;
+    border-left: 2px dashed #c8b8a8;
+  }
+
+  .tag-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .tag-string {
+    width: 20px;
+    height: 2px;
+    background: #c8b8a8;
+    margin-top: 18px;
+    flex-shrink: 0;
+  }
+
+  .tag-card {
+    background: #f5ead8;
+    border: 2px solid #a89070;
+    border-radius: 8px;
+    padding: 10px 14px;
+    position: relative;
+    transition: transform 0.2s ease;
+    flex: 1;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.08);
+  }
+
+  .tag-card::before {
+    content: '';
+    position: absolute;
+    left: -6px; top: 50%;
+    transform: translateY(-50%);
+    width: 8px; height: 8px;
+    background: #a89070;
+    border-radius: 50%;
+  }
+
+  .tag-item:hover .tag-card {
+    transform: rotate(1deg) translateY(-2px);
+  }
+
+  .tag-emoji { font-size: 16px; margin-bottom: 4px; display: block; }
+
+  .tag-q {
+    font-family: 'Gowun Batang', serif;
+    font-size: 13px;
+    color: #5a4030;
+    line-height: 1.5;
+  }
+
+  .tag-mood {
+    font-size: 10px;
+    color: #a89070;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* ─────────────────────────────
+     D. 비문 스타일
+  ───────────────────────────── */
+  .epitaph-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #ece8e0;
+    border: 2.5px solid #8a7a6a;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 4px 4px 0 #8a7a6a;
+  }
+
+  .epitaph-item {
+    padding: 18px 20px;
+    text-align: center;
+    border-bottom: 1.5px dashed #c8b8a8;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .epitaph-item:last-child { border-bottom: none; }
+
+  .epitaph-item:hover { background: #f5f0e8; }
+
+  .ep-emoji {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 6px;
+    filter: grayscale(0.5);
+    transition: filter 0.2s;
+  }
+
+  .epitaph-item:hover .ep-emoji { filter: grayscale(0); }
+
+  .ep-q {
+    font-family: 'Gowun Batang', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: #5a4a3a;
+    line-height: 1.6;
+  }
+
+  .ep-mood {
+    font-size: 10px;
+    color: #a89490;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .ep-revive {
+    font-size: 11px;
+    color: #7a9e7e;
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .epitaph-item:hover .ep-revive { opacity: 1; }
+
+  /* 공통 구분선 */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #c8b8a8, transparent);
+    margin: 8px 0 32px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-title">🪦 묘지 리스트 스타일 미리보기</div>
+
+  <!-- A -->
+  <div class="section">
+    <div class="section-label">
+      <span class="badge">A</span>
+      <span class="section-desc">비석 모양 — 아치형 카드</span>
+    </div>
+    <div class="tombstone-grid">
+      <div class="ts-stone">
+        <div class="ts-head">
+          <span class="ts-emoji">🌑</span>
+        </div>
+        <div class="ts-body">
+          <div class="ts-q-text">내가 기억하지 못하는 나는 아직 나인가?</div>
+          <div class="ts-mood">무거운</div>
+          <div class="ts-revive">🌱 꺼내기</div>
+        </div>
+      </div>
+      <div class="ts-stone">
+        <div class="ts-head">
+          <span class="ts-emoji">🌸</span>
+        </div>
+        <div class="ts-body">
+          <div class="ts-q-text">아름답다고 느끼는 순간 세상은 바뀌는가?</div>
+          <div class="ts-mood">시적인</div>
+          <div class="ts-revive">🌱 꺼내기</div>
+        </div>
+      </div>
+      <div class="ts-stone">
+        <div class="ts-head">
+          <span class="ts-emoji">⚡</span>
+        </div>
+        <div class="ts-body">
+          <div class="ts-q-text">선택하지 않는 것도 선택인가?</div>
+          <div class="ts-mood">날카로운</div>
+          <div class="ts-revive">🌱 꺼내기</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- B -->
+  <div class="section">
+    <div class="section-label">
+      <span class="badge">B</span>
+      <span class="section-desc">바랜 느낌 — 호버하면 선명해짐</span>
+    </div>
+    <div class="faded-list">
+      <div class="faded-card">
+        <span class="faded-emoji">🌑</span>
+        <div class="faded-info">
+          <div class="faded-mood">무거운</div>
+          <div class="faded-q">내가 기억하지 못하는 나는 아직 나인가?</div>
+        </div>
+        <span class="faded-hint">🌱</span>
+      </div>
+      <div class="faded-card">
+        <span class="faded-emoji">🌸</span>
+        <div class="faded-info">
+          <div class="faded-mood">시적인</div>
+          <div class="faded-q">아름답다고 느끼는 순간 세상은 바뀌는가?</div>
+        </div>
+        <span class="faded-hint">🌱</span>
+      </div>
+      <div class="faded-card">
+        <span class="faded-emoji">⚡</span>
+        <div class="faded-info">
+          <div class="faded-mood">날카로운</div>
+          <div class="faded-q">선택하지 않는 것도 선택인가?</div>
+        </div>
+        <span class="faded-hint">🌱</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- C -->
+  <div class="section">
+    <div class="section-label">
+      <span class="badge">C</span>
+      <span class="section-desc">나무 태그 — 줄에 매달린 느낌</span>
+    </div>
+    <div class="tag-list">
+      <div class="tag-item">
+        <div class="tag-string"></div>
+        <div class="tag-card">
+          <span class="tag-emoji">🌑</span>
+          <div class="tag-q">내가 기억하지 못하는 나는 아직 나인가?</div>
+          <div class="tag-mood">무거운</div>
+        </div>
+      </div>
+      <div class="tag-item">
+        <div class="tag-string"></div>
+        <div class="tag-card">
+          <span class="tag-emoji">🌸</span>
+          <div class="tag-q">아름답다고 느끼는 순간 세상은 바뀌는가?</div>
+          <div class="tag-mood">시적인</div>
+        </div>
+      </div>
+      <div class="tag-item">
+        <div class="tag-string"></div>
+        <div class="tag-card">
+          <span class="tag-emoji">⚡</span>
+          <div class="tag-q">선택하지 않는 것도 선택인가?</div>
+          <div class="tag-mood">날카로운</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- D -->
+  <div class="section">
+    <div class="section-label">
+      <span class="badge">D</span>
+      <span class="section-desc">비문 스타일 — 돌판에 새긴 느낌</span>
+    </div>
+    <div class="epitaph-list">
+      <div class="epitaph-item">
+        <span class="ep-emoji">🌑</span>
+        <div class="ep-q">내가 기억하지 못하는 나는 아직 나인가?</div>
+        <div class="ep-mood">무거운</div>
+        <div class="ep-revive">🌱 탭해서 꺼내기</div>
+      </div>
+      <div class="epitaph-item">
+        <span class="ep-emoji">🌸</span>
+        <div class="ep-q">아름답다고 느끼는 순간 세상은 바뀌는가?</div>
+        <div class="ep-mood">시적인</div>
+        <div class="ep-revive">🌱 탭해서 꺼내기</div>
+      </div>
+      <div class="epitaph-item">
+        <span class="ep-emoji">⚡</span>
+        <div class="ep-q">선택하지 않는 것도 선택인가?</div>
+        <div class="ep-mood">날카로운</div>
+        <div class="ep-revive">🌱 탭해서 꺼내기</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

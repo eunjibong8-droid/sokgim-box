@@ -1,0 +1,216 @@
+/* 히스토리 */
+.history-label {
+  font-size: 13px;
+  color: var(--soft);
+  text-align: center;
+  display: none;
+}
+.history-label.show { display: block; }
+
+.history-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.history-card {
+  background: var(--cream);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  padding: 13px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 3px 3px 0 var(--ink);
+  animation: card-in 0.25s ease;
+  cursor: default;
+  transition: transform 0.15s;
+}
+
+.history-card:hover { transform: none; }
+
+.h-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: opacity 0.15s;
+}
+
+.h-card-top:hover { opacity: 0.75; }
+
+.h-tap-hint {
+  font-size: 11px;
+  color: var(--soft);
+  text-align: right;
+  margin-top: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.history-card.has-memo .h-tap-hint,
+.history-card.open .h-tap-hint { opacity: 0; height: 0; margin: 0; overflow: hidden; }
+
+/* 메모 펼침 영역 */
+.h-memo-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.h-memo-wrap.open {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.h-memo-inner {
+  padding-top: 12px;
+  border-top: 1.5px dashed #e0d4ce;
+  margin-top: 10px;
+}
+
+.h-memo-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: 'Gowun Batang', serif;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.7;
+  resize: none;
+  outline: none;
+  min-height: 60px;
+}
+
+.h-memo-textarea::placeholder {
+  color: #c8b8b0;
+  font-family: 'Gowun Batang', serif;
+}
+
+.h-memo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.h-memo-saved {
+  font-size: 12px;
+  color: var(--sage);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.h-memo-saved.show { opacity: 1; }
+
+.h-save-btn {
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 30px;
+  padding: 6px 16px;
+  font-family: 'Gaegu', cursive;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--sage);
+  transition: all 0.12s;
+}
+
+.h-save-btn:hover {
+  transform: translate(-1px,-1px);
+  box-shadow: 3px 3px 0 var(--sage);
+}
+
+/* 메모 있는 카드 표시 */
+.history-card.has-memo .h-q {
+  color: var(--sage-dark, #4a7050);
+}
+
+.h-memo-preview {
+  font-family: 'Gowun Batang', serif;
+  font-size: 12px;
+  color: var(--soft);
+  margin-top: 4px;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 묻어두기 버튼 */
+.h-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1.5px dashed #e0d4ce;
+}
+
+.bury-btn {
+  background: none;
+  border: 1.5px solid #c8b8b0;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: 'Gaegu', cursive;
+  font-size: 12px;
+  color: #a89490;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.bury-btn:hover {
+  border-color: #6b6b6b;
+  color: #4a4a4a;
+}
+
+.history-card.burying {
+  animation: bury-anim 0.6s ease forwards;
+  pointer-events: none;
+}
+
+.history-card:nth-child(4n+2) { background: var(--sage-pale); }
+.history-card:nth-child(4n+3) { background: var(--yellow); }
+.history-card:nth-child(4n+4) { background: var(--lavender); }
+
+.h-emoji { font-size: 20px; flex-shrink: 0; }
+
+.h-info { flex: 1; min-width: 0; }
+
+.h-mood {
+  font-size: 11px;
+  color: var(--soft);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.h-q {
+  font-family: 'Gowun Batang', serif;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.h-num {
+  font-size: 13px;
+  color: var(--salmon);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bury-anim {
+  0%   { transform: translateY(0); opacity: 1; }
+  40%  { transform: translateY(6px) rotate(1deg); opacity: 0.6; }
+  100% { transform: translateY(20px); opacity: 0; }
+}

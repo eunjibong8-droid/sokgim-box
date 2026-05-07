@@ -1,0 +1,100 @@
+@import './tokens.css';
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--salmon-pale);
+  background-image: radial-gradient(circle, rgba(122,158,126,0.12) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Gaegu', cursive;
+  padding: 40px 20px;
+  overflow-x: hidden;
+}
+
+/* 배경 원형 */
+.bg-blob-1 {
+  position: fixed; top: -100px; right: -80px;
+  width: 300px; height: 300px;
+  background: var(--salmon-light);
+  border-radius: 50%;
+  opacity: 0.5; pointer-events: none; z-index: 0;
+}
+.bg-blob-2 {
+  position: fixed; bottom: -60px; left: -60px;
+  width: 220px; height: 220px;
+  background: var(--sage-light);
+  border-radius: 50%;
+  opacity: 0.4; pointer-events: none; z-index: 0;
+}
+
+/* 고정 잎사귀 */
+.fixed-leaf {
+  position: fixed; pointer-events: none; z-index: 0;
+}
+.fixed-leaf-tr {
+  top: 60px; right: -10px;
+  transform: rotate(20deg);
+  opacity: 0.22;
+}
+.fixed-leaf-bl {
+  bottom: 80px; left: -10px;
+  transform: rotate(-30deg) scaleX(-1);
+  opacity: 0.18;
+}
+
+/* 앱 */
+.app {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* 헤더 */
+.header {
+  text-align: center;
+}
+
+.header-emoji {
+  display: block;
+  animation: wobble 3.5s ease-in-out infinite;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.header-title {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.header-sub {
+  font-size: 15px;
+  color: var(--soft);
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(4deg) scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-7px) rotate(6deg); }
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}

@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>철학적 질문 자판기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Gowun+Batang&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─── */
+:root {
+  --salmon:        #f2a99a;
+  --salmon-light:  #fcd5cc;
+  --salmon-pale:   #fef0ec;
+  --sage:          #7a9e7e;
+  --sage-light:    #c2d9c5;
+  --sage-pale:     #edf5ee;
+  --cream:         #fffaf8;
+  --ink:           #2c2c2c;
+  --soft:          #a89490;
+  --yellow:        #fff3b0;
+  --lavender:      #ede0f8;
+  --radius-card:   28px;
+  --shadow:        6px 6px 0 var(--ink);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--salmon-pale);
+  background-image: radial-gradient(circle, rgba(122,158,126,0.13) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  font-family: 'Gaegu', cursive;
+  padding: 40px 20px 80px;
+  overflow-x: hidden;
+}
+
+/* ─── 배경 블럭 ─── */
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-blob-1 { top: -100px; right: -80px; width: 300px; height: 300px; background: var(--salmon-light); opacity: 0.45; }
+.bg-blob-2 { bottom: -60px; left: -60px; width: 220px; height: 220px; background: var(--sage-light); opacity: 0.35; }
+
+/* 배경 잎사귀 */
+.bg-leaf { position: fixed; pointer-events: none; z-index: 0; }
+.bg-leaf-tr { top: 50px; right: -8px; transform: rotate(18deg); opacity: 0.2; }
+.bg-leaf-bl { bottom: 60px; left: -8px; transform: rotate(-28deg) scaleX(-1); opacity: 0.16; }
+
+/* ─── 앱 컨테이너 ─── */
+.app {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ─── 헤더 ─── */
+.header { text-align: center; width: 100%; position: relative; }
+
+.header-leaf {
+  display: block;
+  margin: 0 auto 6px;
+  animation: wobble 3.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(-5deg) scale(1); }
+  50%       { transform: rotate(5deg) scale(1.06); }
+}
+
+.header-title {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 36px;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.header-sub {
+  font-size: 14px;
+  color: var(--soft);
+  letter-spacing: 0.5px;
+}
+
+.settings-btn {
+  position: absolute;
+  top: 4px; right: 0;
+  background: none;
+  border: 2px solid #d9c8c2;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, transform 0.2s;
+  color: var(--soft);
+}
+.settings-btn:hover { border-color: var(--ink); transform: rotate(30deg); }
+
+/* ─── 메인 카드 ─── */
+.main-card {
+  width: 100%;
+  background: var(--cream);
+  border-radius: var(--radius-card);
+  border: 3px solid var(--ink);
+  box-shadow: var(--shadow);
+  padding: 26px 24px 22px;
+  position: relative;
+  overflow: visible;
+  transition: background 0.5s ease;
+}
+
+/* 스티커 */
+.sticker {
+  position: absolute;
+  font-size: 24px;
+  pointer-events: none;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12));
+}
+.sticker-a { top: -16px; right: 32px; animation: float 4.2s ease-in-out infinite 0s; }
+.sticker-b { top: -16px; left: 32px;  animation: float 4.2s ease-in-out infinite 0.9s; }
+.sticker-c { bottom: -14px; right: 55px; animation: float 4.2s ease-in-out infinite 1.8s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50%       { transform: translateY(-8px) rotate(6deg); }
+}
+
+/* 카드 상단 배지 */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.session-tag {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+.mood-pill {
+  border: 2px solid var(--ink);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--salmon-light);
+  opacity: 0;
+  transition: opacity 0.4s ease, background 0.4s ease;
+}
+.mood-pill.show { opacity: 1; }
+
+/* 질문 영역 */
+.question-zone {
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.placeholder-icon {
+  font-size: 38px;
+  display: block;
+  animation: sway 3s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-8deg); }
+  50%       { transform: rotate(8deg); }
+}
+
+.placeholder-text {
+  font-size: 16px;
+  color: var(--soft);
+  line-height: 1.65;
+}
+
+.question-output {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: center;
+}
+.question-output.show {
+  display: flex;
+  animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.72); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.question-q {
+  font-family: 'Gowun Batang', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+/* 파형 */
+.waveform {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.3s;
+}
+.waveform.show { opacity: 1; }
+
+.wb {
+  width: 3px;
+  background: var(--salmon);
+  border-radius: 3px;
+  animation: wv 1.5s ease-in-out infinite;
+}
+.wb:nth-child(1)  { height: 7px;  animation-delay: 0.00s; }
+.wb:nth-child(2)  { height: 14px; animation-delay: 0.10s; }
+.wb:nth-child(3)  { height: 20px; animation-delay: 0.20s; }
+.wb:nth-child(4)  { height: 12px; animation-delay: 0.30s; }
+.wb:nth-child(5)  { height: 18px; animation-delay: 0.15s; }
+.wb:nth-child(6)  { height: 22px; animation-delay: 0.05s; }
+.wb:nth-child(7)  { height: 16px; animation-delay: 0.25s; }
+.wb:nth-child(8)  { height: 10px; animation-delay: 0.35s; }
+.wb:nth-child(9)  { height: 20px; animation-delay: 0.10s; }
+.wb:nth-child(10) { height: 14px; animation-delay: 0.20s; }
+.wb:nth-child(11) { height: 8px;  animation-delay: 0.30s; }
+
+@keyframes wv {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.35; }
+  50%       { transform: scaleY(1);    opacity: 1;    }
+}
+
+/* 버튼 행 */
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.count-bubble {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--salmon-light);
+  border: 3px solid var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.count-bubble.bump { animation: bump 0.3s ease; }
+
+@keyframes bump {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.38); }
+  100% { transform: scale(1); }
+}
+
+.main-btn {
+  flex: 1;
+  background: var(--ink);
+  color: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: 50px;
+  padding: 13px 20px;
+  font-family: 'Gaegu', cursive;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--sage);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  display: flex; align-items: center; justify-content: center;
+  gap: 7px;
+}
+.main-btn:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--sage); }
+.main-btn:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--sage); }
+.main-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-icon { font-size: 20px; }
+.main-btn.loading .btn-icon { animation: spin 0.7s linear infinite; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* 도트 카운터 */
+.dot-row {
+  display: none;
+  justify-content: center;
+  gap: 7px;
+}
+.dot-row.show { display: flex; }
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--salmon-light);
+  border: 2px solid var(--ink);
+  transition: background 0.3s;
+}
+.dot.on { background: var(--salmon); }
+
+/* ─── 히스토리 ─── */
+.history-label {
+  font-size: 13px;
+  color: var(--soft);
+  text-align: center;
+  display: none;
+}
+.history-label.show { display: block; }
+
+.history-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-card {
+  background: var(--salmon-pale);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  padding: 14px 16px 12px;
+  box-shadow: 3px 3px 0 var(--ink);
+  animation: card-in 0.28s ease;
+  transition: opacity 0.15s;
+}
+.history-card:nth-child(4n+2) { background: var(--sage-pale); }
+.history-card:nth-child(4n+3) { background: var(--yellow); }
+.history-card:nth-child(4n+4) { background: var(--lavender); }
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.h-card-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: opacity 0.15s;
+}
+.h-card-top:hover { opacity: 0.75; }
+
+.h-emoji { font-size: 20px; flex-shrink: 0; }
+
+.h-info { flex: 1; min-width: 0; }
+
+.h-mood {
+  font-size: 11px;
+  color: var(--soft);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.h-q {
+  font-family: 'Gowun Batang', serif;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s;
+}
+.history-card.has-memo .h-q { color: #4a7050; }
+
+.h-num {
+  font-size: 13px;
+  color: var(--salmon);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.h-tap-hint {
+  font-size: 11px;
+  color: var(--soft);
+  text-align: right;
+  margin-top: 5px;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.history-card.has-memo .h-tap-hint,
+.history-card.open .h-tap-hint { display: none; }
+
+.h-memo-preview {
+  font-family: 'Gowun Batang', serif;
+  font-size: 12px;
+  color: var(--soft);
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 메모 펼침 */
+.h-memo-wrap {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+.h-memo-wrap.open { max-height: 200px; opacity: 1; }
+
+.h-memo-inner {
+  padding-top: 12px;
+  border-top: 1.5px dashed rgba(0,0,0,0.12);
+  margin-top: 10px;
+}
+
+.h-memo-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: 'Gowun Batang', serif;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.7;
+  resize: none;
+  outline: none;
+  min-height: 60px;
+}
+.h-memo-textarea::placeholder { color: #c0aca6; font-family: 'Gowun Batang', serif; }
+
+.h-memo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.h-memo-saved {
+  font-size: 12px;
+  color: var(--sage);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.h-memo-saved.show { opacity: 1; }
+
+.h-save-btn {
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 30px;
+  padding: 6px 16px;
+  font-family: 'Gaegu', cursive;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--sage);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.h-save-btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--sage); }
+
+/* 묻어두기 버튼 */
+.h-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1.5px dashed rgba(0,0,0,0.1);
+}
+
+.bury-btn {
+  background: none;
+  border: 1.5px solid #c8b8b0;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: 'Gaegu', cursive;
+  font-size: 12px;
+  color: #a89490;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.bury-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+.history-card.burying {
+  animation: bury-anim 0.6s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes bury-anim {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  40%  { transform: translateY(8px) rotate(1.5deg); opacity: 0.6; }
+  100% { transform: translateY(24px); opacity: 0; height: 0; padding: 0; margin: 0; }
+}
+
+/* ─── 묘지 섹션 ─── */
+.graveyard-section {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.gy-trigger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: transform 0.2s;
+}
+.gy-trigger:hover { transform: translateY(-3px); }
+
+.gy-icon { font-size: 30px; line-height: 1; }
+
+.gy-badge {
+  background: #6b6b6b;
+  color: var(--cream);
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-family: 'Gaegu', cursive;
+  min-width: 22px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.gy-badge.show { opacity: 1; }
+
+.gy-body {
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.45s ease, opacity 0.35s ease;
+}
+.gy-body.open { max-height: 1200px; opacity: 1; }
+
+/* ─── 폴라로이드 그리드 ─── */
+.polaroid-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding: 18px 4px 10px;
+}
+
+.polaroid-card {
+  background: #faf5ea;
+  border: 1px solid #d8cfc0;
+  padding: 14px 14px 34px;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+  cursor: pointer;
+  position: relative;
+  filter: sepia(0.4) brightness(0.92);
+  transition: filter 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  animation: polaroid-in 0.4s ease both;
+}
+
+@keyframes polaroid-in {
+  from { opacity: 0; transform: scale(0.82) rotate(0deg); }
+  to   { opacity: 1; }
+}
+
+.polaroid-card:nth-child(odd)  { transform: rotate(-2deg); }
+.polaroid-card:nth-child(even) { transform: rotate(1.5deg); }
+
+.polaroid-card:hover { filter: sepia(0) brightness(1); box-shadow: 5px 10px 28px rgba(0,0,0,0.18); }
+.polaroid-card:nth-child(odd):hover  { transform: rotate(0deg) scale(1.02); }
+.polaroid-card:nth-child(even):hover { transform: rotate(0deg) scale(1.02); }
+
+/* 테이프 */
+.polaroid-card::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: 50%;
+  transform: translateX(-50%) rotate(-0.8deg);
+  width: 52px; height: 17px;
+  background: rgba(255,240,140,0.72);
+  border: 1px solid rgba(200,180,60,0.22);
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 88px;
+  background: #e6ddd0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  filter: grayscale(0.25);
+  transition: filter 0.3s;
+}
+.polaroid-card:hover .polaroid-img { filter: grayscale(0); }
+
+.polaroid-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.polaroid-q {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 16px;
+  color: #5a4a3a;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.polaroid-mood {
+  font-size: 11px;
+  color: #a89490;
+  text-align: center;
+  margin-top: 5px;
+  letter-spacing: 1px;
+}
+
+.polaroid-revive {
+  position: absolute;
+  bottom: 9px; right: 12px;
+  font-size: 11px;
+  color: #7a9e7e;
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+.polaroid-card:hover .polaroid-revive { opacity: 1; }
+
+.polaroid-card.reviving {
+  animation: revive-anim 0.45s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes revive-anim {
+  0%   { opacity: 1; transform: scale(1); }
+  50%  { opacity: 0.8; transform: scale(1.06); filter: sepia(0) brightness(1.15); }
+  100% { opacity: 0; transform: scale(0.88); }
+}
+
+/* ─── 토스트 ─── */
+.toast {
+  position: fixed;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 30px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-family: 'Gaegu', cursive;
+  opacity: 0;
+  z-index: 200;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ─── 온보딩 화면 ─── */
+.onboarding {
+  position: fixed;
+  inset: 0;
+  background: var(--salmon-pale);
+  background-image: radial-gradient(circle, rgba(122,158,126,0.13) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 300;
+  transition: opacity 0.45s ease;
+}
+.onboarding.hidden { opacity: 0; pointer-events: none; }
+
+.onboard-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+  padding: 36px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.onboard-leaf {
+  animation: wobble 3.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.onboard-title {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 32px;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.onboard-desc {
+  font-size: 15px;
+  color: var(--soft);
+  line-height: 1.75;
+}
+
+.onboard-label {
+  font-size: 13px;
+  color: var(--ink);
+  letter-spacing: 1px;
+  align-self: flex-start;
+}
+
+.onboard-input {
+  width: 100%;
+  background: var(--salmon-pale);
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  padding: 13px 16px;
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 1px;
+}
+.onboard-input:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(122,158,126,0.2);
+}
+.onboard-input::placeholder { color: #c0aca6; letter-spacing: 0; }
+
+.onboard-hint {
+  font-size: 12px;
+  color: var(--soft);
+  line-height: 1.6;
+  align-self: flex-start;
+  text-align: left;
+}
+
+.onboard-btn {
+  width: 100%;
+  background: var(--ink);
+  color: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: 50px;
+  padding: 14px 20px;
+  font-family: 'Gaegu', cursive;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--sage);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.onboard-btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--sage); }
+.onboard-btn:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--sage); }
+
+.onboard-err {
+  font-size: 13px;
+  color: var(--salmon);
+  display: none;
+}
+.onboard-err.show { display: block; }
+
+/* ─── 설정 모달 ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44,44,44,0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 250;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+
+.modal-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+  padding: 28px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transform: scale(0.9) translateY(10px);
+  transition: transform 0.3s ease;
+}
+.modal-overlay.show .modal-card { transform: scale(1) translateY(0); }
+
+.modal-title {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 26px;
+  color: var(--ink);
+}
+
+.modal-label {
+  font-size: 13px;
+  color: var(--ink);
+  letter-spacing: 1px;
+}
+
+.modal-input {
+  width: 100%;
+  background: var(--salmon-pale);
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  padding: 12px 15px;
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-input:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(122,158,126,0.2);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modal-cancel {
+  background: none;
+  border: 2px solid #d9c8c2;
+  border-radius: 30px;
+  padding: 8px 18px;
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  color: var(--soft);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.modal-cancel:hover { border-color: var(--ink); color: var(--ink); }
+
+.modal-save {
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 30px;
+  padding: 8px 20px;
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--sage);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.modal-save:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--sage); }
+
+@media (max-width: 700px) {
+  .header-title { font-size: 30px; }
+  .question-q   { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 온보딩 화면 -->
+<div class="onboarding" id="onboarding">
+  <div class="onboard-card">
+    <svg class="onboard-leaf" width="60" height="60" viewBox="0 0 64 64" fill="none">
+      <path d="M32 60 Q8 40 14 10 Q32 0 50 10 Q56 40 32 60Z" fill="#7a9e7e" opacity="0.88"/>
+      <line x1="32" y1="60" x2="32" y2="10" stroke="#4a7050" stroke-width="1.8"/>
+      <path d="M32 38 Q18 28 14 16" stroke="#4a7050" stroke-width="1.2" fill="none"/>
+      <path d="M32 46 Q46 36 50 22" stroke="#4a7050" stroke-width="1.2" fill="none"/>
+      <path d="M18 58 Q26 44 32 60 Q38 44 46 58" fill="#f2a99a" opacity="0.6"/>
+    </svg>
+    <div class="onboard-title">철학적 질문 자판기</div>
+    <div class="onboard-desc">
+      심오하지만 귀여운 질문들을 뽑아드려요.<br>
+      시작하려면 Claude API 키가 필요해요.
+    </div>
+    <div class="onboard-label">API KEY</div>
+    <input class="onboard-input" id="ob-key" type="password"
+      placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+    <div class="onboard-hint">
+      API 키는 브라우저 localStorage에만 저장되며,<br>
+      서버로 전송되지 않아요. 언제든 변경 가능해요.
+    </div>
+    <div class="onboard-err" id="ob-err">API 키를 입력해주세요.</div>
+    <button class="onboard-btn" onclick="startApp()">시작하기</button>
+  </div>
+</div>
+
+<!-- 설정 모달 -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-card">
+    <div class="modal-title">설정</div>
+    <div class="modal-label">API KEY 변경</div>
+    <input class="modal-input" id="modal-key" type="password"
+      placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeSettings()">취소</button>
+      <button class="modal-save" onclick="saveSettings()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 배경 요소 -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<svg class="bg-leaf bg-leaf-tr" width="100" height="170" viewBox="0 0 100 170" fill="none">
+  <path d="M50 160 Q8 100 25 25 Q50 0 75 25 Q92 100 50 160Z" fill="#7a9e7e"/>
+  <line x1="50" y1="160" x2="50" y2="25" stroke="#4a7050" stroke-width="1.5"/>
+  <path d="M50 80 Q30 65 25 45" stroke="#4a7050" stroke-width="1" fill="none"/>
+  <path d="M50 100 Q70 85 75 65" stroke="#4a7050" stroke-width="1" fill="none"/>
+</svg>
+<svg class="bg-leaf bg-leaf-bl" width="80" height="140" viewBox="0 0 80 140" fill="none">
+  <path d="M40 130 Q5 80 18 20 Q40 0 62 20 Q75 80 40 130Z" fill="#f2a99a"/>
+  <line x1="40" y1="130" x2="40" y2="20" stroke="#c07060" stroke-width="1.2"/>
+</svg>
+
+<!-- 메인 앱 -->
+<div class="app" id="main-app" style="display:none">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <button class="settings-btn" onclick="openSettings()" title="설정">⚙️</button>
+    <svg class="header-leaf" width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <path d="M32 60 Q8 40 14 10 Q32 0 50 10 Q56 40 32 60Z" fill="#7a9e7e" opacity="0.88"/>
+      <line x1="32" y1="60" x2="32" y2="10" stroke="#4a7050" stroke-width="1.8"/>
+      <path d="M32 38 Q18 28 14 16" stroke="#4a7050" stroke-width="1.2" fill="none"/>
+      <path d="M32 46 Q46 36 50 22" stroke="#4a7050" stroke-width="1.2" fill="none"/>
+      <path d="M18 58 Q26 44 32 60 Q38 44 46 58" fill="#f2a99a" opacity="0.6"/>
+    </svg>
+    <div class="header-title">철학적 질문 자판기</div>
+    <div class="header-sub">심오하지만 귀여운</div>
+  </div>
+
+  <!-- 메인 카드 -->
+  <div class="main-card" id="main-card">
+    <span class="sticker sticker-a">🌸</span>
+    <span class="sticker sticker-b">⭐</span>
+    <span class="sticker sticker-c">🍃</span>
+
+    <div class="card-top">
+      <span class="session-tag">SESSION <span id="sess-num">—</span></span>
+      <span class="mood-pill" id="mood-pill">···</span>
+    </div>
+
+    <div class="question-zone">
+      <div class="placeholder" id="placeholder">
+        <span class="placeholder-icon">🌺</span>
+        <span class="placeholder-text">버튼을 눌러<br>질문을 받아보세요</span>
+      </div>
+      <div class="question-output" id="q-output">
+        <div class="question-q" id="q-text"></div>
+        <div class="waveform" id="waveform">
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <div class="count-bubble" id="count-bubble">0</div>
+      <button class="main-btn" id="main-btn" onclick="dispense()">
+        <span class="btn-icon" id="btn-icon">🪴</span>
+        질문 뽑기!
+      </button>
+    </div>
+  </div>
+
+  <!-- 도트 카운터 -->
+  <div class="dot-row" id="dot-row">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div><div class="dot"></div>
+  </div>
+
+  <!-- 히스토리 -->
+  <div class="history-label" id="hist-label">— 지난 질문들 —</div>
+  <div class="history-list" id="hist-list"></div>
+
+  <!-- 묘지 섹션 -->
+  <div class="graveyard-section" id="gy-section">
+    <div class="gy-trigger" onclick="toggleGraveyard()">
+      <span class="gy-icon">🪦</span>
+      <span class="gy-badge" id="gy-badge">0</span>
+    </div>
+    <div class="gy-body" id="gy-body">
+      <div class="polaroid-grid" id="polaroid-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── 상태 ─── */
+let count    = 0;
+let history  = [];   // { q, mood, emoji, num, memo? }
+let buried   = [];   // { …history props, buriedId }
+let busy     = false;
+let gyOpen   = false;
+
+const MOOD_MAP = {
+  '무거운':   { emoji: '🌑', bg: '#ede0f8' },
+  '가벼운':   { emoji: '🌤', bg: '#edf5ee' },
+  '시적인':   { emoji: '🌸', bg: '#fef0ec' },
+  '날카로운': { emoji: '⚡', bg: '#fff8e0' },
+  '따뜻한':   { emoji: '🔥', bg: '#fcd5cc' },
+  '쓸쓸한':   { emoji: '🌧', bg: '#dde8f5' },
+  '황당한':   { emoji: '🤔', bg: '#fff3b0' },
+  '조용한':   { emoji: '🍃', bg: '#c2d9c5' },
+};
+
+const SYSTEM_PROMPT =
+  `당신은 철학적 질문 생성기입니다. 반드시 JSON 형식으로만 응답하세요: {"question": "질문 내용", "mood": "무드"}\n` +
+  `mood 값은 반드시 다음 중 하나여야 합니다: 무거운, 가벼운, 시적인, 날카로운, 따뜻한, 쓸쓸한, 황당한, 조용한\n` +
+  `질문은 한국어로, 15~40자 이내, 물음표로 끝나며, 답이 없는 심오한 철학적 질문이어야 합니다.\n` +
+  `JSON 외의 텍스트는 절대 출력하지 마세요.`;
+
+/* ─── 온보딩 ─── */
+function init() {
+  const key = localStorage.getItem('sokgim_api_key');
+  if (key && key.trim()) {
+    showApp();
+  } else {
+    document.getElementById('onboarding').style.opacity = '1';
+  }
+}
+
+function startApp() {
+  const keyEl = document.getElementById('ob-key');
+  const errEl = document.getElementById('ob-err');
+  const key   = keyEl.value.trim();
+  if (!key) { errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+  localStorage.setItem('sokgim_api_key', key);
+  const ob = document.getElementById('onboarding');
+  ob.classList.add('hidden');
+  setTimeout(() => { ob.style.display = 'none'; }, 460);
+  showApp();
+}
+
+function showApp() {
+  document.getElementById('main-app').style.display = 'flex';
+}
+
+/* ─── 설정 모달 ─── */
+function openSettings() {
+  const key = localStorage.getItem('sokgim_api_key') || '';
+  document.getElementById('modal-key').value = key;
+  document.getElementById('settings-modal').classList.add('show');
+}
+
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('show');
+}
+
+function saveSettings() {
+  const key = document.getElementById('modal-key').value.trim();
+  if (key) localStorage.setItem('sokgim_api_key', key);
+  closeSettings();
+  showToast('설정이 저장됐어요 🌿');
+}
+
+/* ─── 질문 뽑기 ─── */
+async function dispense() {
+  if (busy) return;
+  busy = true;
+
+  const btn    = document.getElementById('main-btn');
+  const icon   = document.getElementById('btn-icon');
+  const ph     = document.getElementById('placeholder');
+  const qOut   = document.getElementById('q-output');
+  const wave   = document.getElementById('waveform');
+  const pill   = document.getElementById('mood-pill');
+  const card   = document.getElementById('main-card');
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  icon.textContent = '🌀';
+  qOut.classList.remove('show');
+  wave.classList.remove('show');
+  pill.classList.remove('show');
+  ph.style.display = 'flex';
+  ph.querySelector('.placeholder-icon').textContent = '🌀';
+  ph.querySelector('.placeholder-text').innerHTML   = '생각 중...';
+  card.style.background = '';
+
+  const apiKey = localStorage.getItem('sokgim_api_key') || '';
+  const prevList = history.length
+    ? history.map((h, i) => `${i + 1}. ${h.q}`).join('\n')
+    : '없음';
+
+  let question = '';
+  let mood     = '조용한';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'x-api-key':     apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model:      'claude-sonnet-4-5',
+        max_tokens: 300,
+        system:     SYSTEM_PROMPT,
+        messages:   [{ role: 'user', content: `심오한 철학적 질문 하나를 생성해주세요. 이전 질문들(중복 금지):\n${prevList}` }],
+      }),
+    });
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody?.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    let raw = (data.content?.[0]?.text || '').replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(raw);
+    question = parsed.question;
+    mood     = parsed.mood || '조용한';
+  } catch (err) {
+    console.warn('API 오류, 폴백 사용:', err.message);
+    const fallbacks = [
+      ['내가 기억하지 못하는 나는 아직 나인가?',           '무거운'],
+      ['지금 이 순간만이 진짜인가?',                        '조용한'],
+      ['사랑받는다는 것은 증명 가능한 일인가?',              '따뜻한'],
+      ['완전히 혼자인 사람은 자유로운가?',                  '쓸쓸한'],
+      ['아름답다고 느끼는 순간 세상은 바뀌는가?',            '시적인'],
+      ['선의로 한 행동이 나쁜 결과를 낳으면 누구의 잘못인가?', '날카로운'],
+      ['존재하지 않았다면 행복했을까?',                     '무거운'],
+      ['언어 없이도 생각할 수 있을까?',                    '황당한'],
+    ];
+    const pick = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    question = pick[0];
+    mood     = pick[1];
+  }
+
+  /* ─── 표시 ─── */
+  count++;
+  ph.style.display = 'none';
+
+  const m = MOOD_MAP[mood] || MOOD_MAP['조용한'];
+
+  document.getElementById('q-text').textContent = question;
+  qOut.classList.remove('show');
+  void qOut.offsetWidth; // reflow
+  qOut.classList.add('show');
+  wave.classList.add('show');
+
+  pill.textContent = `${m.emoji} ${mood}`;
+  pill.style.background = m.bg;
+  pill.classList.add('show');
+  card.style.background = m.bg;
+  card.style.transition = 'background 0.6s ease';
+
+  document.getElementById('sess-num').textContent = String(count).padStart(2, '0');
+
+  const cb = document.getElementById('count-bubble');
+  cb.textContent = count;
+  cb.classList.remove('bump');
+  void cb.offsetWidth;
+  cb.classList.add('bump');
+
+  /* 도트 */
+  const dotRow = document.getElementById('dot-row');
+  dotRow.classList.add('show');
+  const pos = count % 5 || 5;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i < pos));
+
+  /* 히스토리 */
+  history.unshift({ q: question, mood, emoji: m.emoji, num: count });
+  if (history.length > 9) history.pop();
+  renderHistory();
+
+  busy = false;
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  icon.textContent = '🪴';
+}
+
+/* ─── 히스토리 렌더 ─── */
+function renderHistory() {
+  const label  = document.getElementById('hist-label');
+  const list   = document.getElementById('hist-list');
+  const prev   = history.slice(1); // index 0 = 현재 세션 질문 제외
+
+  if (!prev.length) {
+    label.classList.remove('show');
+    list.innerHTML = '';
+    return;
+  }
+
+  label.classList.add('show');
+
+  list.innerHTML = prev.map((h, i) => {
+    const idx     = i + 1; // history 배열 기준 인덱스
+    const hasMemo = h.memo && h.memo.trim();
+    return `
+      <div class="history-card${hasMemo ? ' has-memo' : ''}" id="hcard-${idx}">
+        <div class="h-card-top" onclick="toggleMemo(${idx})">
+          <span class="h-emoji">${h.emoji}</span>
+          <div class="h-info">
+            <div class="h-mood">${h.mood}</div>
+            <div class="h-q">${escHtml(h.q)}</div>
+            ${hasMemo ? `<div class="h-memo-preview">💬 ${escHtml(h.memo)}</div>` : ''}
+          </div>
+          <span class="h-num">${String(h.num).padStart(2, '0')}</span>
+        </div>
+        ${!hasMemo ? `<div class="h-tap-hint" onclick="toggleMemo(${idx})">탭해서 생각 적기 ✏️</div>` : ''}
+        <div class="h-memo-wrap" id="hmemo-${idx}" onclick="event.stopPropagation()">
+          <div class="h-memo-inner">
+            <textarea class="h-memo-textarea" id="hta-${idx}"
+              placeholder="지금 떠오르는 생각을 적어보세요...">${escHtml(h.memo || '')}</textarea>
+            <div class="h-memo-footer">
+              <span class="h-memo-saved" id="hsaved-${idx}">저장됐어요 🌿</span>
+              <button class="h-save-btn" onclick="saveMemo(event, ${idx})">저장</button>
+            </div>
+          </div>
+        </div>
+        <div class="h-actions">
+          <button class="bury-btn" onclick="buryCard(event, ${idx})">🪦 묻어두기</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleMemo(idx) {
+  const wrap = document.getElementById(`hmemo-${idx}`);
+  const card = document.getElementById(`hcard-${idx}`);
+  if (!wrap) return;
+  const isOpen = wrap.classList.contains('open');
+  if (isOpen) {
+    wrap.classList.remove('open');
+    card.classList.remove('open');
+  } else {
+    wrap.classList.add('open');
+    card.classList.add('open');
+    setTimeout(() => document.getElementById(`hta-${idx}`)?.focus(), 360);
+  }
+}
+
+function saveMemo(e, idx) {
+  e.stopPropagation();
+  const ta      = document.getElementById(`hta-${idx}`);
+  const savedEl = document.getElementById(`hsaved-${idx}`);
+  if (!ta) return;
+  const text = ta.value.trim();
+  history[idx].memo = text;
+  savedEl.classList.add('show');
+  setTimeout(() => {
+    savedEl.classList.remove('show');
+    const wrap = document.getElementById(`hmemo-${idx}`);
+    const card = document.getElementById(`hcard-${idx}`);
+    wrap?.classList.remove('open');
+    card?.classList.remove('open');
+    renderHistory();
+  }, 1200);
+}
+
+/* ─── 묻어두기 ─── */
+function buryCard(e, idx) {
+  e.stopPropagation();
+  const item = history[idx];
+  if (!item) return;
+  const card = document.getElementById(`hcard-${idx}`);
+  if (!card) return;
+
+  card.classList.add('burying');
+  setTimeout(() => {
+    history.splice(idx, 1);
+    buried.push({ ...item, buriedId: Date.now() + Math.random() });
+    renderHistory();
+    updateGraveyard();
+  }, 600);
+}
+
+/* ─── 묘지 ─── */
+function toggleGraveyard() {
+  gyOpen = !gyOpen;
+  document.getElementById('gy-body').classList.toggle('open', gyOpen);
+}
+
+function updateGraveyard() {
+  const section = document.getElementById('gy-section');
+  const badge   = document.getElementById('gy-badge');
+
+  if (buried.length === 0) {
+    section.style.display = 'none';
+    gyOpen = false;
+    document.getElementById('gy-body').classList.remove('open');
+    return;
+  }
+
+  section.style.display = 'flex';
+  badge.textContent = buried.length;
+  badge.classList.add('show');
+
+  const grid = document.getElementById('polaroid-grid');
+  grid.innerHTML = buried.map(b => {
+    const bid = String(b.buriedId).replace('.', '_');
+    return `
+      <div class="polaroid-card" id="pol-${bid}" onclick="revivePolaroid('${bid}', ${b.buriedId})">
+        <div class="polaroid-img">${b.emoji}</div>
+        <div class="polaroid-q">${escHtml(b.q)}</div>
+        <div class="polaroid-mood">${b.mood}</div>
+        <span class="polaroid-revive">🌱 꺼내기</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function revivePolaroid(elId, buriedId) {
+  const pol = document.getElementById(`pol-${elId}`);
+  if (!pol) return;
+  pol.classList.add('reviving');
+
+  setTimeout(() => {
+    const idx = buried.findIndex(b => b.buriedId === buriedId);
+    if (idx !== -1) {
+      const item = buried.splice(idx, 1)[0];
+      history.push(item);
+    }
+    renderHistory();
+    updateGraveyard();
+    showToast('🌱 질문이 다시 돌아왔어요');
+  }, 450);
+}
+
+/* ─── 토스트 ─── */
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+/* ─── 유틸 ─── */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,  '&amp;')
+    .replace(/</g,  '&lt;')
+    .replace(/>/g,  '&gt;')
+    .replace(/"/g,  '&quot;');
+}
+
+/* ─── Enter 키 지원 ─── */
+document.addEventListener('keydown', e => {
+  if (e.target === document.getElementById('ob-key') && e.key === 'Enter') startApp();
+  if (e.target === document.getElementById('modal-key') && e.key === 'Enter') saveSettings();
+  if (e.key === 'Escape') closeSettings();
+});
+
+/* ─── 모달 오버레이 클릭 닫기 ─── */
+document.getElementById('settings-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
+
+/* ─── 초기화 ─── */
+init();
+</script>
+</body>
+</html>

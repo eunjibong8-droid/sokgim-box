@@ -1,0 +1,245 @@
+/* 메인 카드 */
+.main-card {
+  width: 100%;
+  background: var(--cream);
+  border-radius: 32px;
+  border: 3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+  padding: 26px 24px 22px;
+  position: relative;
+  overflow: visible;
+}
+
+/* 스티커들 */
+.sticker {
+  position: absolute;
+  font-size: 24px;
+  pointer-events: none;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12));
+}
+.sticker-a { top: -16px; right: 28px; animation-delay: 0s; }
+.sticker-b { top: -16px; left: 28px; animation-delay: 0.8s; }
+.sticker-c { bottom: -14px; right: 50px; animation-delay: 1.5s; }
+
+/* 카드 상단 배지 */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.session-tag {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+.mood-pill {
+  background: var(--salmon-light);
+  border: 2px solid var(--ink);
+  border-radius: 20px;
+  padding: 4px 13px;
+  font-size: 13px;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  font-family: 'Gaegu', cursive;
+}
+.mood-pill.show { opacity: 1; }
+
+/* 질문 영역 */
+.question-zone {
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  position: relative;
+}
+
+.placeholder {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.placeholder-icon {
+  font-size: 36px;
+  animation: sway 3s ease-in-out infinite;
+  display: block;
+}
+
+.placeholder-text {
+  font-size: 16px;
+  color: var(--soft);
+  line-height: 1.6;
+}
+
+.question-output {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: center;
+}
+
+.question-output.show {
+  display: flex;
+  animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.question-q {
+  font-family: 'Gowun Batang', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.75;
+}
+
+/* 파형 */
+.waveform {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 22px;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.3s;
+}
+.waveform.show { opacity: 1; }
+
+.wb {
+  width: 3px;
+  background: var(--salmon);
+  border-radius: 3px;
+  animation: wv 1.4s ease-in-out infinite;
+}
+.wb:nth-child(1)  { height: 7px;  animation-delay: 0.0s; }
+.wb:nth-child(2)  { height: 13px; animation-delay: 0.1s; }
+.wb:nth-child(3)  { height: 19px; animation-delay: 0.2s; }
+.wb:nth-child(4)  { height: 11px; animation-delay: 0.3s; }
+.wb:nth-child(5)  { height: 17px; animation-delay: 0.15s; }
+.wb:nth-child(6)  { height: 21px; animation-delay: 0.05s; }
+.wb:nth-child(7)  { height: 15px; animation-delay: 0.25s; }
+.wb:nth-child(8)  { height: 9px;  animation-delay: 0.35s; }
+.wb:nth-child(9)  { height: 19px; animation-delay: 0.1s; }
+.wb:nth-child(10) { height: 13px; animation-delay: 0.2s; }
+.wb:nth-child(11) { height: 7px;  animation-delay: 0.3s; }
+
+/* 버튼 */
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.count-bubble {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--salmon-light);
+  border: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.count-bubble.bump {
+  animation: bump 0.3s ease;
+}
+
+.main-btn {
+  flex: 1;
+  background: var(--ink);
+  color: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: 50px;
+  padding: 13px 20px;
+  font-family: 'Gaegu', cursive;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--sage);
+  transition: all 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.main-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--sage);
+}
+
+.main-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--sage);
+}
+
+.main-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 4px 4px 0 var(--sage);
+}
+
+.btn-icon {
+  font-size: 20px;
+  display: inline-block;
+}
+
+.main-btn.loading .btn-icon {
+  animation: spin 0.7s linear infinite;
+}
+
+/* 도트 카운터 */
+.dot-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  display: none;
+}
+.dot-row.show { display: flex; }
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--salmon-light);
+  border: 2px solid var(--ink);
+  transition: background 0.3s;
+}
+.dot.on { background: var(--salmon); }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.75); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes wv {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
+  50% { transform: scaleY(1); opacity: 1; }
+}

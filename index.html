@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>철학적 질문 자판기 🌿</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Nanum+Pen+Script&family=Gowun+Batang&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="bg-blob-1"></div>
+<div class="bg-blob-2"></div>
+
+<!-- 배경 잎사귀 SVG -->
+<svg class="fixed-leaf fixed-leaf-tr" width="100" height="170" viewBox="0 0 100 170" fill="none">
+  <path d="M50 160 Q8 100 25 25 Q50 0 75 25 Q92 100 50 160Z" fill="#7a9e7e"/>
+  <line x1="50" y1="160" x2="50" y2="25" stroke="#4a7050" stroke-width="1.5"/>
+  <path d="M50 80 Q30 65 25 45" stroke="#4a7050" stroke-width="1" fill="none"/>
+  <path d="M50 100 Q70 85 75 65" stroke="#4a7050" stroke-width="1" fill="none"/>
+</svg>
+<svg class="fixed-leaf fixed-leaf-bl" width="80" height="140" viewBox="0 0 80 140" fill="none">
+  <path d="M40 130 Q5 80 18 20 Q40 0 62 20 Q75 80 40 130Z" fill="#f2a99a"/>
+  <line x1="40" y1="130" x2="40" y2="20" stroke="#c07060" stroke-width="1.2"/>
+</svg>
+
+<div class="app">
+
+  <!-- API 키 입력 -->
+  <div class="api-key-section" id="api-key-section">
+    <div class="api-key-label">
+      🔑 Anthropic API Key
+      <span class="key-status" id="key-status">✓ 저장됨</span>
+    </div>
+    <div class="api-key-row" id="key-input-row">
+      <input class="api-key-input" id="api-key-input" type="password" placeholder="sk-ant-..." autocomplete="off">
+      <button class="api-key-btn" id="api-key-save-btn">저장</button>
+    </div>
+  </div>
+
+  <!-- 헤더 -->
+  <div class="header">
+    <span class="header-emoji">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 60 Q8 40 14 10 Q32 0 50 10 Q56 40 32 60Z" fill="#7a9e7e" opacity="0.85"/>
+        <line x1="32" y1="60" x2="32" y2="10" stroke="#4a7050" stroke-width="1.8"/>
+        <path d="M32 38 Q18 28 14 16" stroke="#4a7050" stroke-width="1.2" fill="none"/>
+        <path d="M32 46 Q46 36 50 22" stroke="#4a7050" stroke-width="1.2" fill="none"/>
+        <path d="M18 58 Q26 44 32 60 Q38 44 46 58" fill="#f2a99a" opacity="0.6"/>
+      </svg>
+    </span>
+    <div class="header-title">철학적 질문 자판기</div>
+    <div class="header-sub">심오하지만 귀여운 🌿</div>
+  </div>
+
+  <!-- 메인 카드 -->
+  <div class="main-card">
+    <span class="sticker sticker-a">🌸</span>
+    <span class="sticker sticker-b">⭐</span>
+    <span class="sticker sticker-c">🍃</span>
+
+    <div class="card-top">
+      <span class="session-tag">SESSION <span id="sess-num">—</span></span>
+      <span class="mood-pill" id="mood-pill">···</span>
+    </div>
+
+    <div class="question-zone">
+      <div class="placeholder" id="placeholder">
+        <span class="placeholder-icon">🌺</span>
+        <span class="placeholder-text">버튼을 눌러<br>질문을 받아보세요</span>
+      </div>
+      <div class="question-output" id="q-output">
+        <div class="question-q" id="q-text"></div>
+        <div class="waveform" id="waveform">
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <div class="count-bubble" id="count-bubble">0</div>
+      <button class="main-btn" id="main-btn">
+        <span class="btn-icon" id="btn-icon">🪴</span>
+        질문 뽑기!
+      </button>
+    </div>
+  </div>
+
+  <!-- 도트 카운터 -->
+  <div class="dot-row" id="dot-row">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div><div class="dot"></div>
+  </div>
+
+  <!-- 히스토리 -->
+  <div class="history-label" id="hist-label">— 지난 질문들 —</div>
+  <div class="history-list" id="hist-list"></div>
+
+  <!-- 묘지 섹션 -->
+  <div class="graveyard-section" id="gy-section" style="display:none">
+    <div class="gy-icon-wrap" id="gy-toggle">
+      <span class="gy-icon">🪦</span>
+      <span class="gy-badge" id="gy-badge"></span>
+    </div>
+    <div class="gy-body" id="gy-body">
+      <div class="polaroid-grid" id="polaroid-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="revive-toast" id="revive-toast">🌱 질문이 다시 돌아왔어요</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Public\\\\시스트란\\\\Tech-Support\\\\Claude\\\\sokgim-box\\\\lab\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Public\\\\시스트란\\\\Tech-Support\\\\Claude\\\\sokgim-box\\\\src/styles/themes\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Public\\\\시스트란\\\\Tech-Support\\\\Claude\\\\sokgim-box\\\\src/styles/components\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Public\\\\시스트란\\\\Tech-Support\\\\Claude\\\\sokgim-box\\\\src/api\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Public\\\\시스트란\\\\Tech-Support\\\\Claude\\\\sokgim-box\\\\src/store\")",
+      "Bash(BASE=\"C:\\\\Users\\\\Public\\\\시스트란\\\\Tech-Support\\\\Claude\\\\sokgim-box\")",
+      "Bash(cp \"$BASE/font-preview.html\" \"$BASE/lab/font-preview.html\")",
+      "Bash(cp \"$BASE/graveyard-preview.html\" \"$BASE/lab/graveyard-preview.html\")",
+      "Bash(cp \"$BASE/graveyard-styles.html\" \"$BASE/lab/graveyard-styles.html\")",
+      "Bash(cp \"$BASE/graveyard-styles-2.html\" \"$BASE/lab/graveyard-styles-2.html\")",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s http://localhost:5173/src/main.js)",
+      "Bash(gh --version)",
+      "Bash(gh auth:*)"
+    ]
+  }
+}

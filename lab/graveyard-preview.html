@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>질문 묘비 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Batang&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fef0ec;
+    background-image: radial-gradient(circle, rgba(122,158,126,0.12) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    min-height: 100vh;
+    font-family: 'Gaegu', cursive;
+    padding: 32px 20px 80px;
+  }
+
+  .wrap {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .page-title {
+    text-align: center;
+    font-size: 13px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* 히스토리 카드 */
+  .history-label {
+    font-size: 13px;
+    color: #a89490;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .history-card {
+    background: #fffaf8;
+    border: 2.5px solid #2c2c2c;
+    border-radius: 20px;
+    padding: 13px 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 3px 3px 0 #2c2c2c;
+    transition: all 0.15s;
+  }
+
+  .history-card:nth-child(2) { background: #fef0ec; }
+  .history-card:nth-child(3) { background: #edf5ee; }
+
+  .h-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .h-card-top:hover { opacity: 0.8; }
+
+  .h-emoji { font-size: 20px; flex-shrink: 0; }
+
+  .h-info { flex: 1; min-width: 0; }
+
+  .h-mood {
+    font-size: 11px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .h-q {
+    font-family: 'Gowun Batang', serif;
+    font-size: 14px;
+    color: #2c2c2c;
+    line-height: 1.45;
+  }
+
+  .h-num {
+    font-size: 13px;
+    color: #f2a99a;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* 묻기 버튼 */
+  .h-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1.5px dashed #e0d4ce;
+  }
+
+  .bury-btn {
+    background: none;
+    border: 1.5px solid #c8b8b0;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: 'Gaegu', cursive;
+    font-size: 12px;
+    color: #a89490;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+  }
+
+  .bury-btn:hover {
+    border-color: #6b6b6b;
+    color: #4a4a4a;
+    background: #f5f0ea;
+  }
+
+  /* 묻히는 애니메이션 */
+  .history-card.burying {
+    animation: bury 0.7s ease forwards;
+  }
+
+  @keyframes bury {
+    0%   { transform: translateY(0); opacity: 1; max-height: 200px; }
+    30%  { transform: translateY(6px) rotate(1deg); opacity: 0.7; }
+    100% { transform: translateY(20px); opacity: 0; max-height: 0; padding: 0; margin: 0; border-width: 0; }
+  }
+
+  /* ───── 묘지 섹션 ───── */
+  .graveyard-toggle {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+
+  .gy-icon-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.2s ease;
+  }
+
+  .graveyard-toggle:hover .gy-icon-wrap {
+    transform: translateY(-3px);
+  }
+
+  .gy-icon {
+    font-size: 32px;
+    filter: grayscale(0.3);
+    transition: filter 0.2s;
+  }
+
+  .graveyard-toggle:hover .gy-icon {
+    filter: grayscale(0);
+  }
+
+  .gy-count-badge {
+    background: #6b6b6b;
+    color: #fffaf8;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-family: 'Gaegu', cursive;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .gy-count-badge.show { opacity: 1; }
+
+  /* 묘지 내부 */
+  .graveyard-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .graveyard-body.open {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  .graveyard-inner {
+    background: #ece8e0;
+    border: 2.5px solid #6b6b6b;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    padding: 20px 16px 18px;
+    margin-top: -4px;
+  }
+
+  .gy-ground {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* 비석 */
+  .tombstone {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #f5f2ec;
+    border: 2px solid #b0a898;
+    border-radius: 14px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .tombstone:hover {
+    background: #fffaf8;
+    border-color: #7a9e7e;
+  }
+
+  .tombstone:hover .revive-hint {
+    opacity: 1;
+  }
+
+  .ts-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    filter: grayscale(0.5);
+    margin-top: 2px;
+  }
+
+  .ts-info { flex: 1; }
+
+  .ts-date {
+    font-size: 10px;
+    color: #a89490;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .ts-q {
+    font-family: 'Gowun Batang', serif;
+    font-size: 13px;
+    color: #6b6060;
+    line-height: 1.5;
+  }
+
+  .revive-hint {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 11px;
+    color: #7a9e7e;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  /* 되살리기 애니메이션 */
+  .tombstone.reviving {
+    animation: revive 0.5s ease forwards;
+  }
+
+  @keyframes revive {
+    0%  { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.04); background: #edf5ee; border-color: #7a9e7e; }
+    100%{ transform: scale(0.95); opacity: 0; max-height: 0; padding: 0; margin: 0; border: none; }
+  }
+
+  .gy-empty {
+    text-align: center;
+    font-size: 13px;
+    color: #a89490;
+    padding: 12px 0;
+    font-style: italic;
+  }
+
+  /* 되살리기 알림 */
+  .revive-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: #2c2c2c;
+    color: #fffaf8;
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-family: 'Gaegu', cursive;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .revive-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-title">🌿 질문 묘비 미리보기</div>
+
+  <div class="history-label">— 지난 질문들 —</div>
+
+  <!-- 히스토리 카드 1 -->
+  <div class="history-card" id="card-1">
+    <div class="h-card-top">
+      <span class="h-emoji">🌑</span>
+      <div class="h-info">
+        <div class="h-mood">무거운</div>
+        <div class="h-q">내가 기억하지 못하는 나는 아직 나인가?</div>
+      </div>
+      <span class="h-num">02</span>
+    </div>
+    <div class="h-actions">
+      <button class="bury-btn" onclick="buryCard('card-1', '내가 기억하지 못하는 나는 아직 나인가?', '🌑', '무거운')">
+        🪦 묻어두기
+      </button>
+    </div>
+  </div>
+
+  <!-- 히스토리 카드 2 -->
+  <div class="history-card" id="card-2">
+    <div class="h-card-top">
+      <span class="h-emoji">🌸</span>
+      <div class="h-info">
+        <div class="h-mood">시적인</div>
+        <div class="h-q">아름답다고 느끼는 순간, 세상은 정말 바뀌는가?</div>
+      </div>
+      <span class="h-num">03</span>
+    </div>
+    <div class="h-actions">
+      <button class="bury-btn" onclick="buryCard('card-2', '아름답다고 느끼는 순간, 세상은 정말 바뀌는가?', '🌸', '시적인')">
+        🪦 묻어두기
+      </button>
+    </div>
+  </div>
+
+  <!-- 묘지 섹션 -->
+  <div class="graveyard-toggle" id="gy-toggle" onclick="toggleGraveyard()">
+    <div class="gy-icon-wrap">
+      <span class="gy-icon">🪦</span>
+      <span class="gy-count-badge" id="gy-count-badge"></span>
+    </div>
+  </div>
+
+  <div class="graveyard-body" id="gy-body">
+    <div class="graveyard-inner">
+      <div class="gy-ground" id="gy-ground">
+        <div class="gy-empty" id="gy-empty">아직 묻어둔 질문이 없어요 🌱</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="revive-toast" id="toast">🌱 질문이 다시 돌아왔어요</div>
+
+<script>
+  let buried = [];
+  let gyOpen = false;
+
+  function buryCard(cardId, question, emoji, mood) {
+    const card = document.getElementById(cardId);
+    card.classList.add('burying');
+
+    buried.push({ question, emoji, mood, id: Date.now() });
+    updateGraveyard();
+
+    setTimeout(() => {
+      card.style.display = 'none';
+    }, 700);
+  }
+
+  function toggleGraveyard() {
+    gyOpen = !gyOpen;
+    const toggle = document.getElementById('gy-toggle');
+    const body = document.getElementById('gy-body');
+    toggle.classList.toggle('open', gyOpen);
+    body.classList.toggle('open', gyOpen);
+  }
+
+  function updateGraveyard() {
+    const ground = document.getElementById('gy-ground');
+    const badge = document.getElementById('gy-count-badge');
+
+    if (buried.length > 0) {
+      badge.textContent = buried.length;
+      badge.classList.add('show');
+    } else {
+      badge.classList.remove('show');
+    }
+
+    if (buried.length === 0) {
+      ground.innerHTML = `<div class="gy-empty">아직 묻어둔 질문이 없어요 🌱</div>`;
+      return;
+    }
+
+    ground.innerHTML = buried.map((b, i) => `
+      <div class="tombstone" id="ts-${b.id}" onclick="reviveTombstone(${b.id})">
+        <span class="ts-icon">${b.emoji}</span>
+        <div class="ts-info">
+          <div class="ts-date">${b.mood} · 잠든 질문</div>
+          <div class="ts-q">${b.question}</div>
+        </div>
+        <span class="revive-hint">탭해서 꺼내기 🌱</span>
+      </div>
+    `).join('');
+  }
+
+  function reviveTombstone(id) {
+    const ts = document.getElementById(`ts-${id}`);
+    ts.classList.add('reviving');
+
+    setTimeout(() => {
+      buried = buried.filter(b => b.id !== id);
+      updateGraveyard();
+      showToast();
+    }, 500);
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // 처음에 묘지 섹션 열어서 보여주기
+  setTimeout(() => toggleGraveyard(), 400);
+</script>
+</body>
+</html>

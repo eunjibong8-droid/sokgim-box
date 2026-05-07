@@ -1,0 +1,94 @@
+/* API 키 섹션 */
+.api-key-section {
+  width: 100%;
+  background: var(--cream);
+  border: 2px dashed #d4c8c0;
+  border-radius: 20px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.api-key-section.saved {
+  border-style: solid;
+  border-color: var(--sage-light);
+  background: var(--sage-pale);
+}
+
+.api-key-label {
+  font-size: 12px;
+  color: var(--soft);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.api-key-label .key-status {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--sage);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.api-key-label .key-status.show { opacity: 1; }
+
+.api-key-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.api-key-input {
+  flex: 1;
+  background: var(--salmon-pale);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+
+.api-key-input:focus { border-color: var(--sage); }
+.api-key-input::placeholder { color: #c8b8b0; }
+
+.api-key-btn {
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 12px;
+  padding: 9px 16px;
+  font-family: 'Gaegu', cursive;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--sage);
+  transition: all 0.12s;
+  flex-shrink: 0;
+}
+
+.api-key-btn:hover {
+  transform: translate(-1px,-1px);
+  box-shadow: 3px 3px 0 var(--sage);
+}
+
+.api-key-toggle {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--soft);
+  cursor: pointer;
+  font-family: 'Gaegu', cursive;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+}
+
+.api-key-toggle:hover { color: var(--ink); }

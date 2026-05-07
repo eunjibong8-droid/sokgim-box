@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>철학적 질문 자판기 🍬</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff8f0;
+    --mint: #c8f0e8;
+    --pink: #ffd6e0;
+    --yellow: #fff3b0;
+    --lavender: #e8d8f8;
+    --peach: #ffe0cc;
+    --ink: #2d2d2d;
+    --soft: #888;
+    --white: #ffffff;
+    --shadow: rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(circle, #e8e0ff22 1px, transparent 1px);
+    background-size: 28px 28px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Gaegu', cursive;
+    padding: 40px 20px;
+    cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><text y='26' font-size='26'>✨</text></svg>") 16 16, auto;
+  }
+
+  .machine {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* 타이틀 */
+  .title-block {
+    text-align: center;
+  }
+
+  .title-emoji {
+    font-size: 48px;
+    display: block;
+    animation: wobble 3s ease-in-out infinite;
+    margin-bottom: 4px;
+  }
+
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  .title-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .title-sub {
+    font-size: 15px;
+    color: var(--soft);
+    margin-top: 2px;
+  }
+
+  /* 뽑기 기계 */
+  .vending-body {
+    width: 100%;
+    background: var(--white);
+    border-radius: 32px;
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: visible;
+  }
+
+  /* 귀여운 스티커들 */
+  .sticker {
+    position: absolute;
+    font-size: 22px;
+    animation: float 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .sticker-1 { top: -14px; right: 24px; animation-delay: 0s; }
+  .sticker-2 { top: -14px; left: 24px; animation-delay: 0.7s; }
+  .sticker-3 { bottom: -14px; right: 40px; animation-delay: 1.4s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-6px) rotate(5deg); }
+  }
+
+  /* 질문 화면 */
+  .screen {
+    background: var(--mint);
+    border-radius: 20px;
+    border: 2.5px solid var(--ink);
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen-tag {
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    font-size: 11px;
+    color: var(--soft);
+    letter-spacing: 1px;
+  }
+
+  .screen-deco {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 18px;
+    opacity: 0.3;
+  }
+
+  .screen-placeholder {
+    font-size: 16px;
+    color: #aaa;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .question-bubble {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .question-bubble.show {
+    display: flex;
+    animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .question-mood {
+    font-size: 11px;
+    background: white;
+    border: 1.5px solid var(--ink);
+    border-radius: 20px;
+    padding: 3px 12px;
+    color: var(--soft);
+    letter-spacing: 1px;
+  }
+
+  .question-main {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--ink);
+    text-align: center;
+    font-weight: 700;
+  }
+
+  /* 기계 디테일 */
+  .machine-details {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+
+  .detail-pill {
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* 버튼 */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-btn {
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 32px;
+    font-family: 'Gaegu', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 #555;
+    transition: all 0.12s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .main-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #555;
+  }
+
+  .main-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #555;
+  }
+
+  .main-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-spin {
+    display: inline-block;
+    font-size: 20px;
+  }
+
+  .main-btn.loading .btn-spin {
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* 카운터 태그 */
+  .count-tag {
+    background: var(--pink);
+    border: 2.5px solid var(--ink);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .count-tag.bump {
+    animation: bump 0.3s ease;
+  }
+
+  @keyframes bump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  /* 히스토리 */
+  .history-section {
+    width: 100%;
+    display: none;
+  }
+
+  .history-section.show { display: block; }
+
+  .history-toggle {
+    background: none;
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-family: 'Gaegu', cursive;
+    font-size: 14px;
+    color: var(--soft);
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .history-toggle:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .history-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .history-card {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    box-shadow: 3px 3px 0 var(--ink);
+    animation: slide-in 0.25s ease;
+  }
+
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .history-num {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .history-q {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* 색상 순환 */
+  .history-card:nth-child(4n+1) { background: var(--mint); }
+  .history-card:nth-child(4n+2) { background: var(--pink); }
+  .history-card:nth-child(4n+3) { background: var(--yellow); }
+  .history-card:nth-child(4n+4) { background: var(--lavender); }
+
+  /* 히스토리 버튼 */
+  .show-history-btn {
+    background: none;
+    border: none;
+    font-family: 'Gaegu', cursive;
+    font-size: 14px;
+    color: var(--soft);
+    cursor: pointer;
+    text-decoration: underline dotted;
+    display: none;
+  }
+
+  .show-history-btn.visible { display: inline-block; }
+
+  /* 화면 색상 랜덤 */
+  .screen.mood-heavy { background: var(--lavender); }
+  .screen.mood-light { background: var(--mint); }
+  .screen.mood-poetic { background: var(--peach); }
+  .screen.mood-sharp { background: var(--yellow); }
+</style>
+</head>
+<body>
+
+<div class="machine">
+  <div class="title-block">
+    <span class="title-emoji">🍬</span>
+    <div class="title-text">철학적 질문 자판기</div>
+    <div class="title-sub">심오하지만 귀여운</div>
+  </div>
+
+  <div class="vending-body">
+    <span class="sticker sticker-1">⭐</span>
+    <span class="sticker sticker-2">🌀</span>
+    <span class="sticker sticker-3">💭</span>
+
+    <div class="screen" id="screen">
+      <span class="screen-tag">QUESTION</span>
+      <div class="screen-placeholder" id="placeholder">
+        버튼을 눌러<br>질문을 뽑아보세요 👇
+      </div>
+      <div class="question-bubble" id="bubble">
+        <span class="question-mood" id="q-mood">???</span>
+        <div class="question-main" id="q-text"></div>
+      </div>
+      <span class="screen-deco">✦</span>
+    </div>
+
+    <div class="machine-details">
+      <div class="detail-pill">🎲 랜덤 무드</div>
+      <div class="detail-pill" id="count-pill">총 <span id="total">0</span>번</div>
+    </div>
+
+    <div class="btn-row">
+      <div class="count-tag" id="count-tag">0</div>
+      <button class="main-btn" id="main-btn" onclick="dispense()">
+        <span class="btn-spin" id="btn-icon">🪄</span>
+        질문 뽑기!
+      </button>
+    </div>
+  </div>
+
+  <button class="show-history-btn" id="hist-toggle-btn" onclick="toggleHistory()">
+    지난 질문 보기 ▾
+  </button>
+
+  <div class="history-section" id="history-section">
+    <div class="history-cards" id="history-cards"></div>
+  </div>
+</div>
+
+<script>
+  let count = 0;
+  let history = [];
+  let isLoading = false;
+  let historyOpen = false;
+
+  const MOODS = ['무거운', '가벼운', '시적인', '날카로운', '따뜻한', '쓸쓸한', '황당한', '조용한'];
+  const MOOD_CLASSES = ['mood-heavy', 'mood-light', 'mood-poetic', 'mood-sharp', 'mood-light', 'mood-heavy', 'mood-poetic', 'mood-sharp'];
+  const MOOD_EMOJIS = ['🌑', '🌤', '🌸', '⚡', '🔥', '🌧', '🤔', '🍃'];
+
+  const SYSTEM_PROMPT = `당신은 철학적 질문을 만드는 자판기입니다.
+매번 하나의 철학적 질문을 한국어로 생성하세요. 아래 JSON 형식으로만 응답하세요.
+
+{"question": "질문 내용", "mood": "무드 한 단어"}
+
+mood는 다음 중 하나: 무거운, 가벼운, 시적인, 날카로운, 따뜻한, 쓸쓸한, 황당한, 조용한
+
+질문 기준:
+- 답이 없거나 답이 여러 개인 것
+- 15~40자 사이
+- 물음표로 끝남
+- 잠시 멈추게 만드는 질문
+- 무드는 질문의 분위기에 맞게 랜덤하게 선택
+- 매번 다른 주제: 시간, 기억, 존재, 언어, 타인, 죽음, 사랑, 의식, 자유의지, 진실, 아름다움, 도덕, 정체성 등
+
+JSON만 출력하고 다른 텍스트는 절대 포함하지 마세요.`;
+
+  async function dispense() {
+    if (isLoading) return;
+    isLoading = true;
+
+    const btn = document.getElementById('main-btn');
+    const icon = document.getElementById('btn-icon');
+    const screen = document.getElementById('screen');
+    const placeholder = document.getElementById('placeholder');
+    const bubble = document.getElementById('bubble');
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+    icon.textContent = '⏳';
+
+    bubble.classList.remove('show');
+    placeholder.style.display = 'block';
+    placeholder.textContent = '생각 중... 🌀';
+    screen.className = 'screen';
+
+    const prevList = history.length > 0
+      ? `\n이미 나온 질문들 (중복 금지):\n${history.map((h,i) => `${i+1}. ${h.q}`).join('\n')}`
+      : '';
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT + prevList,
+          messages: [{ role: "user", content: "질문 생성" }]
+        })
+      });
+
+      const data = await res.json();
+      let raw = data.content?.[0]?.text?.trim() || '';
+      raw = raw.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(raw);
+
+      showQuestion(parsed.question, parsed.mood);
+
+    } catch(e) {
+      const fallbacks = [
+        { question: "내가 기억하지 못하는 나는 아직 나인가?", mood: "무거운" },
+        { question: "지금 이 순간만이 진짜인가?", mood: "조용한" },
+        { question: "사랑받는다는 것은 증명 가능한 일인가?", mood: "따뜻한" },
+        { question: "완전히 혼자인 사람은 자유로운가?", mood: "쓸쓸한" },
+        { question: "아름답다고 느끼는 순간 세상은 바뀌는가?", mood: "시적인" },
+      ];
+      const f = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+      showQuestion(f.question, f.mood);
+    }
+
+    isLoading = false;
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    icon.textContent = '🪄';
+  }
+
+  function showQuestion(question, mood) {
+    count++;
+
+    const screen = document.getElementById('screen');
+    const placeholder = document.getElementById('placeholder');
+    const bubble = document.getElementById('bubble');
+    const qText = document.getElementById('q-text');
+    const qMood = document.getElementById('q-mood');
+    const countTag = document.getElementById('count-tag');
+    const total = document.getElementById('total');
+
+    // 무드 인덱스
+    const moodIdx = MOODS.indexOf(mood);
+    const moodClass = moodIdx >= 0 ? MOOD_CLASSES[moodIdx] : 'mood-light';
+    const moodEmoji = moodIdx >= 0 ? MOOD_EMOJIS[moodIdx] : '💭';
+
+    screen.className = 'screen ' + moodClass;
+    qText.textContent = question;
+    qMood.textContent = moodEmoji + ' ' + (mood || '???');
+
+    placeholder.style.display = 'none';
+    bubble.classList.add('show');
+
+    // 카운터
+    countTag.textContent = count;
+    total.textContent = count;
+    countTag.classList.remove('bump');
+    void countTag.offsetWidth;
+    countTag.classList.add('bump');
+
+    // 히스토리 저장
+    history.unshift({ q: question, mood: mood || '???', emoji: moodEmoji });
+    if (history.length > 12) history.pop();
+
+    updateHistory();
+
+    document.getElementById('hist-toggle-btn').classList.add('visible');
+    if (historyOpen) renderHistory();
+  }
+
+  function updateHistory() {
+    if (historyOpen) renderHistory();
+  }
+
+  function renderHistory() {
+    const container = document.getElementById('history-cards');
+    container.innerHTML = history.map((item, i) => `
+      <div class="history-card">
+        <span class="history-num">${item.emoji}</span>
+        <div class="history-q">${item.q}</div>
+      </div>
+    `).join('');
+  }
+
+  function toggleHistory() {
+    historyOpen = !historyOpen;
+    const section = document.getElementById('history-section');
+    const btn = document.getElementById('hist-toggle-btn');
+    section.classList.toggle('show', historyOpen);
+    btn.textContent = historyOpen ? '접기 ▴' : '지난 질문 보기 ▾';
+    if (historyOpen) renderHistory();
+  }
+</script>
+</body>
+</html>
